@@ -55,7 +55,6 @@
 
 					<form:form id="userForm" class="form-horizontal" method="POST" action="${ action }" modelAttribute="user" role="form">
 						<form:hidden path="id" />
-						<form:hidden path="state" />
 						<form:hidden path="passwd" />
 
 						<div class="form-group required">

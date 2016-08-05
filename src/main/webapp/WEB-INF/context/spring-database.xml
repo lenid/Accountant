@@ -11,7 +11,7 @@
                             http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
                             http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd ">
   
-    <context:component-scan base-package="messagesservice.dao" />
+    <context:component-scan base-package="accountant.dao" />
     
 	<context:property-placeholder location="classpath:application.properties" />
 	
@@ -27,7 +27,7 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan">
 			<list>
-				<value>messagesservice.model</value>
+				<value>accountant.model</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
