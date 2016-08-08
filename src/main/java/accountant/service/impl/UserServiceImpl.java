@@ -1,73 +1,80 @@
 package accountant.service.impl;
 
-import accountant.dao.UserDao;
-import accountant.model.State;
-import accountant.model.User;
+import accountant.models.db.UserDb;
+import accountant.models.ui.UserUi;
+import accountant.service.BaseService;
 import accountant.service.UserService;
 import accountant.util.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("userService")
 @Transactional
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends BaseService implements UserService {
 
 	@Autowired
-	private UserDao dao;
+	private accountant.dao.UserDao dao;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
 	@Override
-	public void persist(User user) {
-		user.setPasswd(passwordEncoder.encode(user.getNewPasswd()));
-		dao.persist(user);
-	}
-	
+	public void persist(UserUi userUi) {
+	    UserDb userDb = convert(userUi, UserDb.class);
+        userDb.setPasswd(passwordEncoder.encode(userUi.getPasswdNew()));
 
-	@Override
-	public Set<User> getAllActived() {
-		Set<User> users = dao.getAll(State.ACTIVE);
-		User currentUser = dao.findBySso(SecurityHelper.getSso());
-		users.remove(currentUser);
-		return users;
+		dao.persist(userDb);
 	}
 
 	@Override
-	public User findById(int id) {
-		return dao.findById(id);
+	public Set<UserUi> getAll() {
+		Set<UserDb> userDbSet = dao.getAll();
+		UserDb currentUser = dao.findBySso(SecurityHelper.getSso());
+		int currentUserId = currentUser.getId();
+		return userDbSet.stream().filter(u -> u.getId() != currentUserId).map((u) -> convert(u, UserUi.class)).collect(Collectors.toSet());
 	}
 
 	@Override
-	public User findBySso(String sso) {
-		return dao.findBySso(sso);
+	public UserUi findById(int id) {
+	    return convert(dao.findById(id), UserUi.class);
 	}
 
 	@Override
-	public void update(User user) {
-		if (!user.getNewPasswd().equals("")) {
-			user.setPasswd(passwordEncoder.encode(user.getNewPasswd()));
+	public UserUi findBySso(String sso) {
+		return convert(dao.findBySso(sso), UserUi.class);
+	}
+
+	@Override
+	public void update(UserUi userUi) {
+		UserDb userDb = convert(userUi, UserDb.class);
+		if (!userUi.getPasswdNew().equals("")) {
+			userDb.setPasswd(passwordEncoder.encode(userUi.getPasswdNew()));
 		}
 
-		dao.update(user);
+		dao.update(userDb);
 	}
 
 	@Override
 	public void delete(int userId) {
-		throw new UnsupportedOperationException();
+		dao.delete(dao.findById(userId));
 	}
 
 	@Override
-	public boolean isDuplicatedSsoId(User user) {
-		User userBySso = dao.findBySso(user.getSsoId());
+	public boolean isDuplicatedSsoId(UserUi userUi) {
+        UserDb userDb = convert(userUi, UserDb.class);
+	    UserDb userBySso = dao.findBySso(userDb.getSsoId());
 
 		if (userBySso == null) {
 			return false;
-		} else if (userBySso.getId() == user.getId()) {
+		} else if (userBySso.getId() == userDb.getId()) {
 			return false;
 		}
 

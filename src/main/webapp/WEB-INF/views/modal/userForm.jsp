@@ -58,7 +58,7 @@
 		<div class="form-group">
 			<label class="${ col_1 } control-label"><s:message code="user.label.passwd" /></label>
 			<div class="${ col_2 }">
-				<form:input class="form-control" path="newPasswd" placeholder="********" />
+				<form:input class="form-control" path="passwdNew" placeholder="********" />
 			</div>
 		</div>
 

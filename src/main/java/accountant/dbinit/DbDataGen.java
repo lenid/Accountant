@@ -1,12 +1,13 @@
 package accountant.dbinit;
 
+import accountant.constants.Profile;
+import accountant.models.db.MessageDb;
+import accountant.models.db.ProfileDb;
+import accountant.models.db.UserDb;
+import accountant.models.ui.UserUi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import accountant.dbinit.DbInitConfiguration.MessageServiceDbInit;
 import accountant.dbinit.DbInitConfiguration.UserProfileServiceDbInit;
-import accountant.model.Message;
-import accountant.model.User;
-import accountant.model.UserProfile;
-import accountant.model.UserProfile.Type;
 import accountant.service.UserProfileService;
 import accountant.service.UserService;
 import org.springframework.context.ApplicationContext;
@@ -61,7 +62,7 @@ public class DbDataGen {
 	
 
 	void test() throws Throwable {
-		User user = userService.findBySso("user_9");
+		UserUi user = userService.findBySso("user_9");
 
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -69,13 +70,13 @@ public class DbDataGen {
 		String json = mapper.writeValueAsString(user);
 		System.out.println(json);
 
-		User u = mapper.readValue(json, User.class);
+		UserUi u = mapper.readValue(json, UserUi.class);
 
 		u.setLastName(new Date().toString());
 		
-		Message message = new Message();
-		message.setFrom(userService.findBySso("user_8"));
-		message.setTo(userService.findBySso("user_9"));
+		MessageDb message = new MessageDb();
+//		message.setFrom(userService.findBySso("user_8"));
+//		message.setTo(userService.findBySso("user_9"));
 		message.setSubject("subject");
 		message.setBody("BODY2");
 		
@@ -90,41 +91,39 @@ public class DbDataGen {
 
 		createUserProfile();
 
-		createUser(LOGIN, PASSWD, "Andriy", Type.ADMIN);
+		createUser(LOGIN, PASSWD, "Andriy", Profile.ADMIN);
 
 		((ConfigurableApplicationContext) ctx).close();
 	}
 
 	private void createUserProfile() {
-		Type[] types = Type.values();
+		Profile[] profiles = Profile.values();
 
-		for (Type type : types) {
-			UserProfile userProfile = userProfileService.findByType(type.toString());
+		for (Profile profile : profiles) {
+			ProfileDb profileDB = userProfileService.findByType(profile.toString());
 
-			if (userProfile == null) {
-				userProfile = new UserProfile();
-				userProfile.setType(type.toString());
-				userProfileDaoInit.save(userProfile);
+			if (profileDB == null) {
+				profileDB = new ProfileDb();
+				profileDB.setProfile(profile.toString());
+				userProfileDaoInit.save(profileDB);
 			}
 		}
 	}
 
-	private void createUser(String login, String passwd, String firstName, Type userType) {
-		User user = userService.findBySso(login);
+	private void createUser(String login, String passwd, String firstName, Profile profile) {
+		UserUi user = userService.findBySso(login);
 
 		if (user != null) {
 			userService.delete(user.getId());
 		}
 
-		user = new User();
+		user = new UserUi();
 		user.setSsoId(login);
-		user.setNewPasswd(passwd);
+		user.setPasswdNew(passwd);
 		user.setFirstName(firstName);
 		user.setLastName("Losoviy");
 		user.setEmail(login + "@mail.ru");
-
-		UserProfile userProfile = userProfileService.findByType(userType.toString());
-		user.setProfiles(new HashSet<UserProfile>(Arrays.asList(userProfile)));
+		user.setProfiles(new HashSet<Profile>(Arrays.asList(profile)));
 
 		userService.persist(user);
 	}

@@ -3,6 +3,8 @@ package accountant.controller;
 import java.util.ArrayList;
 import java.util.Set;
 
+import accountant.models.db.UserDb;
+import accountant.models.ui.UserUi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import accountant.data.Notification;
-import accountant.model.User;
 import accountant.service.UserProfileService;
 import accountant.service.UserService;
 
@@ -32,9 +33,9 @@ public class UserController extends BaseController {
 		ModelAndView model = new ModelAndView("users");
 		defaultModelInitialize(model, notifications, "users.header");
 
-		Set<User> users = userService.getAllActived();
-		model.addObject("users", users);
-		model.addObject("user", new User());
+		Set<UserUi> userUiSet = userService.getAll();
+		model.addObject("users", userUiSet);
+		model.addObject("user", new UserUi());
 
 		return model;
 	}
@@ -43,37 +44,37 @@ public class UserController extends BaseController {
 	public @ResponseBody ModelAndView getUserAjax(@PathVariable int userId) {
 		ModelAndView model = new ModelAndView("modal/userForm");
 
-		User user = null;
+		UserUi userUi = null;
 		if (userId == 0) {
-			user = new User();
+			userUi = new UserUi();
 			model.addObject("userHeader", "users.popup_user.header.create");
 		} else {
-			user = userService.findById(userId);
+			userUi = userService.findById(userId);
 			model.addObject("userHeader", "users.popup_user.header.edit");
 		}
 
-		model.addObject("user", user);
+		model.addObject("user", userUi);
 		model.addObject("roles", userProfileService.findAll());
 
 		return model;
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String createOrUpdateUserAjax(@ModelAttribute("user") User user) {
-		if (userService.isDuplicatedSsoId(user)) {
+	public String createOrUpdateUserAjax(@ModelAttribute("user") UserUi userUi) {
+		if (userService.isDuplicatedSsoId(userUi)) {
 
 		}
 
-		if (user.getId() == 0) {
-			userService.persist(user);
+		if (userUi.getId() == 0) {
+			userService.persist(userUi);
 		} else {
-			userService.update(user);
+			userService.update(userUi);
 		}
 		return "redirect:/user";
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public String deleteUserAjax(@ModelAttribute("user") User user) {
+	public String deleteUserAjax(@ModelAttribute("user") UserDb user) {
 		userService.delete(user.getId());
 		return "redirect:/user";
 	}

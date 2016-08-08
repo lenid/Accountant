@@ -2,16 +2,16 @@ package accountant.dao;
 
 import java.util.Set;
 
-import accountant.model.State;
-import accountant.model.User;
+import accountant.constants.State;
+import accountant.models.db.UserDb;
 
 public interface UserDao {
-	public void persist(User user);
-	public Set<User> getAll();
-	public Set<User> getAll(State state);
-	public User findById(int id);
-	public User findBySso(String sso);
-	public void update(User user);
-	public void delete(User user);
+	public void persist(UserDb user);
+	public Set<UserDb> getAll();
+	public Set<UserDb> getAll(State state);
+	public UserDb findById(int id);
+	public UserDb findBySso(String sso);
+	public void update(UserDb user);
+	public void delete(UserDb user);
 }
 

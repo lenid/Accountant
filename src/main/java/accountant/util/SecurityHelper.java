@@ -3,13 +3,13 @@ package accountant.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import accountant.constants.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import accountant.model.UserProfile.Type;
 
 public class SecurityHelper {
 
@@ -43,17 +43,17 @@ public class SecurityHelper {
 		return roles;
 	}
 
-	public static Type userRoleToType(String role) {
-		for (Type userType : Type.values()) {
-			if (role.equals(ROLE_PREFIX + userType.name()))
-				return userType;
+	public static Profile userRoleToType(String role) {
+		for (Profile profile : Profile.values()) {
+			if (role.equals(ROLE_PREFIX + profile.name()))
+				return profile;
 		}
 		return null;
 	}
 
 	public static boolean isAdmin() {
 		for (String role : getUserRoles()) {
-			if (Type.ADMIN == userRoleToType(role)) {
+			if (Profile.ADMIN == userRoleToType(role)) {
 				return true;
 			}
 		}

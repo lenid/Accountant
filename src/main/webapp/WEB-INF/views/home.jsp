@@ -37,7 +37,7 @@
 
 	<div class="container-fluid">
 		<div class="row">
-			<%@include file="include/contacts.jsp"%>
+			<%--<%@include file="include/contacts.jsp"%>--%>
 			<div class="col-lg-10 col-lg-offset-2 main">
 				<h3 align="center">
 					<s:message code="${ pageHeader }" text="No header" />
@@ -59,17 +59,17 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="message" items="${ messages }">
-									<tr>
-										<td align="center"><input class="messageCheckbox" type="checkbox" name="messageIds" value="${ message.id }" /></td>
-										<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.id }</td>
-										<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.from.firstName } ${ message.from.lastName }</td>
-										<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.to.firstName } ${ message.to.lastName }</td>
-										<td class='clickable clickable-row' onclick="getMessage(${ message.id })"><fmt:formatDate value="${ message.created }"
-												pattern='${ dateFormat }' /></td>
-										<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.subject }</td>
-									</tr>
-								</c:forEach>
+								<%--<c:forEach var="message" items="${ messages }">--%>
+									<%--<tr>--%>
+										<%--<td align="center"><input class="messageCheckbox" type="checkbox" name="messageIds" value="${ message.id }" /></td>--%>
+										<%--<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.id }</td>--%>
+										<%--<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.from.firstName } ${ message.from.lastName }</td>--%>
+										<%--<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.to.firstName } ${ message.to.lastName }</td>--%>
+										<%--<td class='clickable clickable-row' onclick="getMessage(${ message.id })"><fmt:formatDate value="${ message.created }"--%>
+												<%--pattern='${ dateFormat }' /></td>--%>
+										<%--<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.subject }</td>--%>
+									<%--</tr>--%>
+								<%--</c:forEach>--%>
 							</tbody>
 						</table>
 					</form:form>

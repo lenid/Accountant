@@ -1,11 +1,11 @@
-package accountant.service;
+package accountant.dao;
 
 import java.util.Set;
 
 import accountant.models.db.ProfileDb;
 
-public interface UserProfileService {
-	Set<ProfileDb> findAll();
+public interface ProfileDao {
+	Set<ProfileDb> getAll();
 	ProfileDb findById(int id);
 	ProfileDb findByType(String type);
 }

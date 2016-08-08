@@ -55,7 +55,7 @@
 
 					<form:form id="userForm" class="form-horizontal" method="POST" action="${ action }" modelAttribute="user" role="form">
 						<form:hidden path="id" />
-						<form:hidden path="passwd" />
+						<form:hidden path="passwdEncoded" />
 
 						<div class="form-group required">
 							<form:label class="${ col_1 } control-label" path="firstName">
@@ -95,7 +95,7 @@
 							<div class="form-group required">
 								<label class="${ col_1 } control-label"><s:message code="user.label.passwd" /></label>
 								<div class="${ col_2 }">
-									<form:password class="form-control" path="newPasswd" />
+									<form:password class="form-control" path="passwdNew" />
 								</div>
 							</div>
 							<div class="form-group required">
@@ -138,7 +138,7 @@
 								<div class="form-group required">
 									<label class="${ col_1 } control-label"><s:message code="user.label.passwd" /></label>
 									<div class="${ col_2 }">
-										<form:password id="oldPasswdSso" class="form-control" path="oldPasswd" />
+										<form:password id="passwdOldSso" class="form-control" path="passwdOld" />
 									</div>
 								</div>
 								<div class="form-group">
@@ -170,7 +170,7 @@
 								<div class="form-group required">
 									<label class="${ col_1 } control-label"><s:message code="user.label.passwd_old" /></label>
 									<div class="${ col_2 }">
-										<form:password id="oldPasswdPass" class="form-control" path="oldPasswd" />
+										<form:password id="passwdOldPass" class="form-control" path="passwdOld" />
 									</div>
 									<div class="${ col_3 }" align="right">
 										<button class="btn btn-primary" name="action" type="submit" value="passwd" onclick="editPasswd()">
@@ -181,7 +181,7 @@
 								<div class="form-group required">
 									<label class="${ col_1 } control-label"><s:message code="user.label.passwd_new" /></label>
 									<div class="${ col_2 }">
-										<form:password class="form-control" path="newPasswd" />
+										<form:password class="form-control" path="passwdNew" />
 									</div>
 								</div>
 								<div class="form-group required">
@@ -199,18 +199,6 @@
 								</div>
 							</div>
 							
-							<!-- 
-							<div class="form-group">
-								<label class="${ col_1 } control-lable" for="userProfiles"><s:message code="user.label.role" /></label>
-								<div class="${ col_2 }">
-									<form:select class="form-control" path="userProfiles" items="${ roles }" itemValue="id" itemLabel="type" multiple="true" />
-									<div class="has-error">
-										<form:errors path="userProfiles" class="help-inline" />
-									</div>
-								</div>
-							</div>
-							 -->
-
 							<div class="form-group">
 								<label class="${ col_1 } control-label"><s:message code="user.label.created" /></label>
 								<div class="${ col_2 }">
@@ -263,7 +251,7 @@
 		function hideSsoForm() {
 			var validator = $('#userForm').data('formValidation');
 			validator.resetField('ssoId');
-			validator.resetField('oldPasswd');
+			validator.resetField('passwdOld');
 			document.getElementById('noEditSso').style.display = "block";
 			document.getElementById('editSso').style.display = "none";
 			document.getElementById('mainButtons').style.display = "block";
@@ -271,12 +259,12 @@
 
 		function hidePasswdForm() {
 			var validator = $('#userForm').data('formValidation');
-			validator.resetField('oldPasswdPass');
-			validator.resetField('newPasswd');
+			validator.resetField('passwdOldPass');
+			validator.resetField('passwdNew');
 			validator.resetField('confirmPasswd');
 
-			$('#oldPasswdPass').val('');
-			$('#newPasswd').val('');
+			$('#passwdOldPass').val('');
+			$('#passwdNew').val('');
 			$('#confirmPasswd').val('');
 
 			document.getElementById('noEditPasswd').style.display = "block";
@@ -285,11 +273,11 @@
 		}
 
 		function editSsoId() {
-			$('#oldPasswdPass').prop('disabled', true);
+			$('#passwdOldPass').prop('disabled', true);
 		}
 
 		function editPasswd() {
-			$('#oldPasswdSso').prop('disabled', true);
+			$('#passwdOldSso').prop('disabled', true);
 		}
 		
 		$(document).ready(function() {

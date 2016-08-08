@@ -1,7 +1,8 @@
 package accountant.service;
 
-import accountant.model.User;
-import accountant.model.UserProfile;
+import accountant.models.db.UserDb;
+import accountant.models.db.ProfileDb;
+import accountant.models.ui.UserUi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,28 +19,24 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private UserService userService;
+	private accountant.dao.UserDao dao;
 
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String ssoId) throws UsernameNotFoundException {
-		User user = userService.findBySso(ssoId);
-		System.out.println("User : " + user); //wc
-		if (user == null) {
-			System.out.println("User not found"); //wc
+		UserDb userDb = dao.findBySso(ssoId);
+		if (userDb == null) {
 			throw new UsernameNotFoundException("Username not found");
 		}
-		return new org.springframework.security.core.userdetails.User(user.getSsoId(), user.getPasswd(), true,
-				true, true, true, getGrantedAuthorities(user));
+		return new org.springframework.security.core.userdetails.User(userDb.getSsoId(), userDb.getPasswd(), true,
+				true, true, true, getGrantedAuthorities(userDb));
 	}
 
-	private List<GrantedAuthority> getGrantedAuthorities(User user) {
+	private List<GrantedAuthority> getGrantedAuthorities(UserDb userDb) {
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-		for (UserProfile userProfile : user.getProfiles()) {
-			System.out.println("UserProfile : " + userProfile); //wc
-			authorities.add(new SimpleGrantedAuthority("ROLE_" + userProfile.getType()));
+		for (ProfileDb userProfile : userDb.getProfiles()) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + userProfile.getProfile()));
 		}
-		System.out.print("authorities :" + authorities); //wc
 		return authorities;
 	}
 

@@ -1,12 +1,12 @@
-package accountant.model;
+package accountant.constants;
 
 public enum State {
 
 	ACTIVE("Active"),
 	DELETED("Deleted");
-	
+
 	private String state;
-	
+
 	private State(final String state){
 		this.state = state;
 	}

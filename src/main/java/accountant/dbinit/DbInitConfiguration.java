@@ -1,14 +1,13 @@
 package accountant.dbinit;
 
 import accountant.dao.AbstractDao;
-import accountant.dao.MessageDao;
 import accountant.dao.UserDao;
-import accountant.dao.UserProfileDao;
+import accountant.dao.ProfileDao;
 import accountant.dao.impl.MessageDaoImpl;
 import accountant.dao.impl.UserDaoImpl;
-import accountant.dao.impl.UserProfileDaoImpl;
-import accountant.model.Message;
-import accountant.model.UserProfile;
+import accountant.dao.impl.ProfileDaoImpl;
+import accountant.models.db.MessageDb;
+import accountant.models.db.ProfileDb;
 import accountant.service.UserProfileService;
 import accountant.service.UserService;
 import accountant.service.impl.UserProfileServiceImpl;
@@ -42,7 +41,7 @@ public class DbInitConfiguration {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan(new String[] { "accountant.model" });
+        sessionFactory.setPackagesToScan(new String[] { "accountant.models" });
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
      }
@@ -86,8 +85,8 @@ public class DbInitConfiguration {
 	}
 	
 	@Bean
-	public UserProfileDao userProfileDao() {
-		return new UserProfileDaoImpl();
+	public ProfileDao userProfileDao() {
+		return new ProfileDaoImpl();
 	}
 	
 	@Bean
@@ -96,7 +95,7 @@ public class DbInitConfiguration {
 	}
 	
 	@Bean
-	public MessageDao messageDao() {
+	public accountant.dao.MessageDao messageDao() {
 		return new MessageDaoImpl();
 	}
 	
@@ -126,27 +125,27 @@ public class DbInitConfiguration {
     }
     
     @Transactional
-	class UserProfileServiceDbInit extends AbstractDao<Integer, UserProfile> {
+	class UserProfileServiceDbInit extends AbstractDao<Integer, ProfileDb> {
 
-		public void save(UserProfile userProfile) {
+		public void save(ProfileDb userProfile) {
 			persist(userProfile);
 		}
 		
 	}
     
     @Transactional
-	class MessageServiceDbInit extends AbstractDao<Integer, Message> {
+	class MessageServiceDbInit extends AbstractDao<Integer, MessageDb> {
     	
     	public void deleteAll() {
-    		Set<Message> allMessages = getAll();
+    		Set<MessageDb> allMessages = getAll();
 
-    		for (Message message : allMessages) {
+    		for (MessageDb message : allMessages) {
     			delete(message);
     		}
     	}
     	
     	@Override
-    	public void persist(Message entity) {
+    	public void persist(MessageDb entity) {
     		super.persist(entity);
     	}
     	

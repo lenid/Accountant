@@ -11,9 +11,9 @@
 
 	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
 		<property name="converters">
-			<list>
+			<set>
 				<bean id="roleToUserProfile" class="accountant.util.RoleToUserProfileConverter" />
-			</list>
+			</set>
 		</property>
 	</bean>
 

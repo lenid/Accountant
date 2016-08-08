@@ -1,4 +1,4 @@
-package accountant.model;
+package accountant.models.db;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -10,49 +10,43 @@ import org.hibernate.annotations.GenerationTime;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name="USERS")
-public class User {
+@Table(name="users")
+public class UserDb {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@NotBlank
-	@Column(name = "SSO_ID", unique = true, nullable = false)
+	@Column(name = "sso_id", unique = true, nullable = false)
 	private String ssoId;
 
 	@NotBlank
-	@Column(name="PASSWORD")
+	@Column(name="password")
 	private String passwd;
 
-	@Transient
-	private String oldPasswd = "";
-
-	@Transient
-	private String newPasswd = "";
-
 	@NotBlank
-	@Column(name = "FIRST_NAME", nullable = true)
+	@Column(name = "first_name", nullable = true)
 	private String firstName;
 
 	@NotBlank
-	@Column(name = "LAST_NAME", nullable = true)
+	@Column(name = "last_name", nullable = true)
 	private String lastName;
 
 	@NotBlank
-	@Column(name = "EMAIL", nullable = true)
+	@Column(name = "email", nullable = true)
 	private String email;
 	
     @Temporal( value = TemporalType.TIMESTAMP ) 
     @org.hibernate.annotations.Generated(value=GenerationTime.INSERT) 
-    @Column(name = "CREATED", nullable = false, insertable=false, updatable=false, columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created", nullable = false, insertable=false, updatable=false, columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Date created;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "USERS_USER_PROFILES", 
-             joinColumns = { @JoinColumn(name = "USER_ID") }, 
-             inverseJoinColumns = { @JoinColumn(name = "USER_PROFILE_ID") })
-	private Set<UserProfile> profiles = new HashSet<UserProfile>();
+	@JoinTable(name = "user_profiles",
+             joinColumns = { @JoinColumn(name = "user_id") },
+             inverseJoinColumns = { @JoinColumn(name = "profile_id") })
+	private Set<ProfileDb> profiles = new HashSet<ProfileDb>();
 
 	public int getId() {
 		return id;
@@ -76,22 +70,6 @@ public class User {
 
 	public void setPasswd(String passwd) {
 		this.passwd = passwd;
-	}
-
-	public String getOldPasswd() {
-		return oldPasswd;
-	}
-
-	public void setOldPasswd(String oldPasswd) {
-		this.oldPasswd = oldPasswd;
-	}
-
-	public String getNewPasswd() {
-		return newPasswd;
-	}
-
-	public void setNewPasswd(String newPasswd) {
-		this.newPasswd = newPasswd;
 	}
 
 	public String getFirstName() {
@@ -126,11 +104,11 @@ public class User {
 		this.created = created;
 	}
 
-	public Set<UserProfile> getProfiles() {
+	public Set<ProfileDb> getProfiles() {
 		return profiles;
 	}
 
-	public void setProfiles(Set<UserProfile> profiles) {
+	public void setProfiles(Set<ProfileDb> profiles) {
 		this.profiles = profiles;
 	}
 
@@ -139,7 +117,7 @@ public class User {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		User user = (User) o;
+		UserDb user = (UserDb) o;
 
 		if (id != user.id) return false;
 		return ssoId.equals(user.ssoId);

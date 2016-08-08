@@ -13,7 +13,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import accountant.model.State;
+import accountant.constants.State;
 
 public abstract class AbstractDao<PK extends Serializable, T> {
 	private final Class<T> persistentClass;

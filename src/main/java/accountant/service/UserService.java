@@ -1,15 +1,16 @@
 package accountant.service;
 
+import accountant.models.ui.UserUi;
+
 import java.util.Set;
 
-import accountant.model.User;
 
 public interface UserService {
-	public void persist(User user);
-	public Set<User> getAllActived();
-	public User findById(int id);
-	public User findBySso(String sso);
-	public void update(User user);
+	public void persist(UserUi user);
+	public Set<UserUi> getAll();
+	public UserUi findById(int id);
+	public UserUi findBySso(String sso);
+	public void update(UserUi user);
 	public void delete(int userId);
-	public boolean isDuplicatedSsoId(User user);
+	public boolean isDuplicatedSsoId(UserUi user);
 }

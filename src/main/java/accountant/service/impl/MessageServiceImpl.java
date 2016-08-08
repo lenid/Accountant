@@ -2,13 +2,12 @@ package accountant.service.impl;
 
 import java.util.Set;
 
-import accountant.model.User;
+import accountant.models.db.MessageDb;
+import accountant.models.db.UserDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import accountant.dao.MessageDao;
-import accountant.model.Message;
 import accountant.service.MessageService;
 
 @Service("messageService")
@@ -16,34 +15,34 @@ import accountant.service.MessageService;
 public class MessageServiceImpl implements MessageService {
 
 	@Autowired
-	private MessageDao dao;
+	private accountant.dao.MessageDao dao;
 
 	@Override
-	public void persist(Message message) {
+	public void persist(MessageDb message) {
 		dao.persist(message);
 	}
 
 	@Override
-	public Set<Message> findAll() {
+	public Set<MessageDb> findAll() {
 		return dao.getAll();
 	}
 
 	@Override
-	public Message findById(int id) {
-		Message message = dao.findById(id);
-		message.setFrom(new User());
-		message.setTo(new User());
+	public MessageDb findById(int id) {
+		MessageDb message = dao.findById(id);
+		message.setFrom(new UserDb());
+		message.setTo(new UserDb());
 		
 		return message;
 	}
 	
 	@Override
-	public Set<Message> findIncoming(User user) {
+	public Set<MessageDb> findIncoming(UserDb user) {
 		return null;
 	}
 	
 	@Override
-	public Set<Message> findOutcoming(User user) {
+	public Set<MessageDb> findOutcoming(UserDb user) {
 		return null;
 	}
 

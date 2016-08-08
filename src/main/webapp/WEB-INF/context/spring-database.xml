@@ -27,7 +27,7 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan">
 			<list>
-				<value>accountant.model</value>
+				<value>accountant.models</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">

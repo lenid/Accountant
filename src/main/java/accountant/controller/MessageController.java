@@ -3,6 +3,7 @@ package accountant.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import accountant.models.db.MessageDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import accountant.data.Notification;
-import accountant.model.Message;
 import accountant.service.MessageService;
 import accountant.service.UserService;
 import accountant.util.SecurityHelper;
@@ -29,17 +29,18 @@ public class MessageController extends BaseController {
 	MessageService messageService;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody Message getMessageAjax(@RequestParam int id) {
+	public @ResponseBody
+	MessageDb getMessageAjax(@RequestParam int id) {
 		return messageService.findById(id);
 	}
 	
 	@RequestMapping(value = "/send", method = RequestMethod.POST)
-	public String SendMessage(@ModelAttribute Message message, @RequestParam(value = "recipients") int[] recipientIds, RedirectAttributes redirectAttributes) {
-		message.setFrom(userService.findBySso(SecurityHelper.getSso()));
+	public String SendMessage(@ModelAttribute MessageDb message, @RequestParam(value = "recipients") int[] recipientIds, RedirectAttributes redirectAttributes) {
+//		message.setFrom(userService.findBySso(SecurityHelper.getSso()));
 		
 		for (int id : recipientIds) {
 			message.setId(0);
-			message.setTo(userService.findById(id));
+//			message.setTo(userService.findById(id));
 			messageService.persist(message);
 		}
 		
