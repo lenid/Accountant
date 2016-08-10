@@ -6,6 +6,8 @@ import accountant.models.db.ProfileDb;
 import accountant.models.db.UserDb;
 import accountant.models.ui.UserUi;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ConversionServiceFactoryBean;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -19,11 +21,14 @@ import java.util.stream.Collectors;
 
 public class UserUiToDbConverter implements Converter<UserUi, UserDb> {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
+//
+//    @Autowired
+//    private ProfileDao profileDao;
 
     @Autowired
-    private ProfileDao profileDao;
+    private ConversionServiceFactoryBean conversionServiceFactoryBean;
 
     @Override
     public UserDb convert(UserUi userUi) {
@@ -37,7 +42,8 @@ public class UserUiToDbConverter implements Converter<UserUi, UserDb> {
         userDb.setEmail(userUi.getEmail());
         userDb.setCreated(userUi.getCreated());
 
-        Set<ProfileDb> profileDbSet = userUi.getProfiles().stream().map((p) -> profileDao.findByType(p.toString())).collect(Collectors.toSet());
+        ConversionService conversionService = conversionServiceFactoryBean.getObject();
+        Set<ProfileDb> profileDbSet = userUi.getProfiles().stream().map((p) -> conversionService.convert(p, ProfileDb.class)).collect(Collectors.toSet());
         userDb.setProfiles(profileDbSet);
 
         return userDb;

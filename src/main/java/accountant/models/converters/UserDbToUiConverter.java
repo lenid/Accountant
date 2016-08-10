@@ -4,6 +4,9 @@ import accountant.constants.Profile;
 import accountant.models.db.ProfileDb;
 import accountant.models.db.UserDb;
 import accountant.models.ui.UserUi;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ConversionServiceFactoryBean;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +18,9 @@ import java.util.stream.Collectors;
  */
 
 public class UserDbToUiConverter implements Converter<UserDb, UserUi> {
+
+    @Autowired
+    private ConversionServiceFactoryBean conversionServiceFactoryBean;
 
     @Override
     public UserUi convert(UserDb userDb) {
@@ -28,8 +34,9 @@ public class UserDbToUiConverter implements Converter<UserDb, UserUi> {
         userUi.setEmail(userDb.getEmail());
         userUi.setCreated(userDb.getCreated());
 
+        ConversionService conversionService = conversionServiceFactoryBean.getObject();
         Set<ProfileDb> profileDbSet = userDb.getProfiles();
-        Set<Profile> profileSet = profileDbSet.stream().map((pDb) -> Profile.valueOf(pDb.getProfile().toUpperCase())).collect(Collectors.toSet());
+        Set<Profile> profileSet = profileDbSet.stream().map((pDb) -> conversionService.convert(pDb, Profile.class)).collect(Collectors.toSet());
         userUi.setProfiles(profileSet);
 
         return userUi;

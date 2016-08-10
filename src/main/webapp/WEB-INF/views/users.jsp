@@ -73,8 +73,8 @@
 									<td><nobr>
 											<fmt:formatDate value="${ user.created }" pattern='${ dateFormat }' />
 										</nobr></td>
-									<td><c:forEach var="profile" items="${ user.userProfiles }">
-											<span>${ profile.type }</span>
+									<td><c:forEach var="profile" items="${ user.profiles }">
+											<span>${ profile }</span>
 										</c:forEach></td>
 								</tr>
 							</c:forEach>

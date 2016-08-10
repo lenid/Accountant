@@ -1,11 +1,11 @@
 package accountant.service;
 
+import accountant.constants.Profile;
+
 import java.util.Set;
 
-import accountant.models.db.ProfileDb;
-
 public interface UserProfileService {
-	Set<ProfileDb> findAll();
-	ProfileDb findById(int id);
-	ProfileDb findByType(String type);
+	Set<Profile> findAll();
+	Profile findById(int id);
+	Profile findByType(String type);
 }

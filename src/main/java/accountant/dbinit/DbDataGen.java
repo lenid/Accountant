@@ -19,113 +19,113 @@ import java.util.Date;
 import java.util.HashSet;
 
 public class DbDataGen {
-	private static final String LOGIN = "admin";
-	private static final String PASSWD = "pass";
+    private static final String LOGIN = "admin";
+    private static final String PASSWD = "pass";
 
-	private UserService userService;
-	private UserProfileService userProfileService;
-	private UserProfileServiceDbInit userProfileDaoInit;
-	private MessageServiceDbInit messageService;
-	private ApplicationContext ctx;
+    private UserService userService;
+    private UserProfileService userProfileService;
+    private UserProfileServiceDbInit userProfileDaoInit;
+    private MessageServiceDbInit messageService;
+    private ApplicationContext ctx;
 
-	private DbDataGen() {
-		ctx = new AnnotationConfigApplicationContext(DbInitConfiguration.class);
+    private DbDataGen() {
+        ctx = new AnnotationConfigApplicationContext(DbInitConfiguration.class);
 
-		userService = ctx.getBean(UserService.class);
-		userProfileService = ctx.getBean(UserProfileService.class);
-		userProfileDaoInit = ctx.getBean(UserProfileServiceDbInit.class);
-		messageService = ctx.getBean(MessageServiceDbInit.class);
-		
-	}
+        userService = ctx.getBean(UserService.class);
+        userProfileService = ctx.getBean(UserProfileService.class);
+        userProfileDaoInit = ctx.getBean(UserProfileServiceDbInit.class);
+        messageService = ctx.getBean(MessageServiceDbInit.class);
 
-	public static void main(String[] args) throws Throwable {
-		new DbDataGen().dbInit();
+    }
+
+    public static void main(String[] args) throws Throwable {
+        new DbDataGen().dbInit();
 //		new DbDataGen().test5();
-	}
+    }
 
-	void test4() {
+    void test4() {
 //		Formatter formatter = new Formatter();
-		int a = 5;
-		String x = "Successfully deleted %d post(s)";
+        int a = 5;
+        String x = "Successfully deleted %d post(s)";
 //		formatter.format(x, a);
-		String str = String.format(x, a);
-		System.out.println(str);
-		
-	}
-	
-	void test3() throws Throwable {
+        String str = String.format(x, a);
+        System.out.println(str);
+
+    }
+
+    void test3() throws Throwable {
 //		ShortUser u = shortUserService.findById(4);
-		ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
 //		String json = mapper.writeValueAsString(u);
 //		System.out.println(json);
-	}
-	
+    }
 
-	void test() throws Throwable {
-		UserUi user = userService.findBySso("user_9");
 
-		ObjectMapper mapper = new ObjectMapper();
+    void test() throws Throwable {
+        UserUi user = userService.findBySso("user_9");
 
-		System.out.println("================================================================");
-		String json = mapper.writeValueAsString(user);
-		System.out.println(json);
+        ObjectMapper mapper = new ObjectMapper();
 
-		UserUi u = mapper.readValue(json, UserUi.class);
+        System.out.println("================================================================");
+        String json = mapper.writeValueAsString(user);
+        System.out.println(json);
 
-		u.setLastName(new Date().toString());
-		
-		MessageDb message = new MessageDb();
+        UserUi u = mapper.readValue(json, UserUi.class);
+
+        u.setLastName(new Date().toString());
+
+        MessageDb message = new MessageDb();
 //		message.setFrom(userService.findBySso("user_8"));
 //		message.setTo(userService.findBySso("user_9"));
-		message.setSubject("subject");
-		message.setBody("BODY2");
-		
+        message.setSubject("subject");
+        message.setBody("BODY2");
 
-		userService.update(u);
-		
-		System.out.println();
-	}
 
-	public void dbInit() {
-		messageService.deleteAll();
+        userService.update(u);
 
-		createUserProfile();
+        System.out.println();
+    }
 
-		createUser(LOGIN, PASSWD, "Andriy", Profile.ADMIN);
+    public void dbInit() {
+        messageService.deleteAll();
 
-		((ConfigurableApplicationContext) ctx).close();
-	}
+        createUserProfile();
 
-	private void createUserProfile() {
-		Profile[] profiles = Profile.values();
+        createUser(LOGIN, PASSWD, "Andriy", Profile.ADMIN);
 
-		for (Profile profile : profiles) {
-			ProfileDb profileDB = userProfileService.findByType(profile.toString());
+        ((ConfigurableApplicationContext) ctx).close();
+    }
 
-			if (profileDB == null) {
-				profileDB = new ProfileDb();
-				profileDB.setProfile(profile.toString());
-				userProfileDaoInit.save(profileDB);
-			}
-		}
-	}
+    private void createUserProfile() {
+        Profile[] profiles = Profile.values();
 
-	private void createUser(String login, String passwd, String firstName, Profile profile) {
-		UserUi user = userService.findBySso(login);
+        for (Profile profile : profiles) {
+            Profile profileSaved = userProfileService.findByType(profile.toString());
 
-		if (user != null) {
-			userService.delete(user.getId());
-		}
+            if (profileSaved == null) {
+                ProfileDb profileDB = new ProfileDb();
+                profileDB.setProfile(profile.toString());
+                userProfileDaoInit.save(profileDB);
+            }
+        }
+    }
 
-		user = new UserUi();
-		user.setSsoId(login);
-		user.setPasswdNew(passwd);
-		user.setFirstName(firstName);
-		user.setLastName("Losoviy");
-		user.setEmail(login + "@mail.ru");
-		user.setProfiles(new HashSet<Profile>(Arrays.asList(profile)));
+    private void createUser(String login, String passwd, String firstName, Profile profile) {
+        UserUi user = userService.findBySso(login);
 
-		userService.persist(user);
-	}
+        if (user != null) {
+            userService.delete(user.getId());
+        }
+
+        user = new UserUi();
+        user.setSsoId(login);
+        user.setPasswdNew(passwd);
+        user.setFirstName(firstName);
+        user.setLastName("Losoviy");
+        user.setEmail(login + "@mail.ru");
+        user.setProfiles(new HashSet<Profile>(Arrays.asList(profile)));
+
+        userService.persist(user);
+    }
 
 }

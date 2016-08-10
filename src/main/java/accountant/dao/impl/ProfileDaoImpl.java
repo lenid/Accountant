@@ -18,7 +18,7 @@ public class ProfileDaoImpl extends AbstractDao<Integer, ProfileDb>implements Pr
 	@SuppressWarnings("unchecked")
 	public Set<ProfileDb> getAll(){
 		Criteria crit = createEntityCriteria();
-		crit.addOrder(Order.asc("type"));
+		crit.addOrder(Order.asc("id"));
 		return new HashSet<ProfileDb>(crit.list());
 	}
 	

@@ -18,6 +18,8 @@
             <set>
                 <bean class="accountant.models.converters.UserDbToUiConverter" />
                 <bean class="accountant.models.converters.UserUiToDbConverter" />
+                <bean class="accountant.models.converters.ProfileFromDbConverter" />
+                <bean class="accountant.models.converters.ProfileToDbConverter" />
             </set>
         </property>
     </bean>
