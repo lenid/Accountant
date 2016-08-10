@@ -3,6 +3,7 @@ package accountant.models.converters;
 import accountant.constants.Profile;
 import accountant.models.db.ProfileDb;
 import accountant.models.db.UserDb;
+import accountant.models.ui.ProfileUi;
 import accountant.models.ui.UserUi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ConversionServiceFactoryBean;
@@ -36,8 +37,8 @@ public class UserDbToUiConverter implements Converter<UserDb, UserUi> {
 
         ConversionService conversionService = conversionServiceFactoryBean.getObject();
         Set<ProfileDb> profileDbSet = userDb.getProfiles();
-        Set<Profile> profileSet = profileDbSet.stream().map((pDb) -> conversionService.convert(pDb, Profile.class)).collect(Collectors.toSet());
-        userUi.setProfiles(profileSet);
+        Set<ProfileUi> profileUiSet = profileDbSet.stream().map((pDb) -> conversionService.convert(pDb, ProfileUi.class)).collect(Collectors.toSet());
+        userUi.setProfiles(profileUiSet);
 
         return userUi;
     }

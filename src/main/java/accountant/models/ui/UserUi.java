@@ -21,7 +21,7 @@ public class UserUi {
     private String lastName;
     private String email;
     private Date created;
-    private Set<Profile> profiles = new HashSet<>();
+    private Set<ProfileUi> profiles = new HashSet<>();
 
 
     public int getId() {
@@ -96,11 +96,11 @@ public class UserUi {
         this.created = created;
     }
 
-    public Set<Profile> getProfiles() {
+    public Set<ProfileUi> getProfiles() {
         return profiles;
     }
 
-    public void setProfiles(Set<Profile> profiles) {
+    public void setProfiles(Set<ProfileUi> profiles) {
         this.profiles = profiles;
     }
 

@@ -2,6 +2,7 @@ package accountant.service.impl;
 
 import accountant.constants.Profile;
 import accountant.dao.ProfileDao;
+import accountant.models.ui.ProfileUi;
 import accountant.service.BaseService;
 import accountant.service.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,18 @@ public class UserProfileServiceImpl extends BaseService implements UserProfileSe
     @Autowired
     ProfileDao dao;
 
-    public Set<Profile> findAll() {
+    public Set<ProfileUi> findAll() {
         return dao.getAll().stream()
-                .map((pDb) -> convert(pDb, Profile.class))
+                .map((pDb) -> convert(pDb, ProfileUi.class))
                 .collect(Collectors.toSet());
     }
 
-    public Profile findById(int id) {
-        return convert(dao.findById(id), Profile.class);
+    public ProfileUi findById(int id) {
+        return convert(dao.findById(id), ProfileUi.class);
     }
 
-    public Profile findByType(String type) {
-        return convert(dao.findByType(type), Profile.class);
+    public ProfileUi findByType(String type) {
+        return convert(dao.findByType(type), ProfileUi.class);
     }
 
 }

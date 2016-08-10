@@ -58,15 +58,9 @@ public class UserController extends BaseController {
 		}
 
 		model.addObject("user", userUi);
-//		model.addObject("roles", userProfileService.findAll());
-		ProfileUi profileUiAdmin = new ProfileUi(Profile.ADMIN);
-		ProfileUi profileUiUser = new ProfileUi(Profile.USER);
 
-		List<ProfileUi> profileUiSet = new ArrayList<>();
-		profileUiSet.add(profileUiAdmin);
-		profileUiSet.add(profileUiUser);
-
-		model.addObject("roles", profileUiSet);
+		List<ProfileUi> profileUiList = new ArrayList<>(userProfileService.findAll());
+		model.addObject("roles", profileUiList);
 
 		return model;
 	}

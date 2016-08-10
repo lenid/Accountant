@@ -3,6 +3,7 @@ package accountant.controller;
 import accountant.constants.Profile;
 import accountant.data.Notification;
 import accountant.models.db.UserDb;
+import accountant.models.ui.ProfileUi;
 import accountant.models.ui.UserUi;
 import accountant.service.UserProfileService;
 import accountant.service.UserService;
@@ -98,7 +99,7 @@ public class AccountController extends BaseController {
 			return "redirect:/signup";
 		}
 
-        userUi.setProfiles(new HashSet<>(Arrays.asList(Profile.USER)));
+        userUi.setProfiles(new HashSet<>(Arrays.asList(new ProfileUi(Profile.USER))));
 		userService.persist(userUi);
 		notifications.add(new Notification("user.notification.success.create"));
 		redirectAttributes.addFlashAttribute(notifications);
