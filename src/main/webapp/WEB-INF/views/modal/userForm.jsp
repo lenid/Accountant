@@ -18,8 +18,7 @@
 <form:form id="userForm" class="form-horizontal" method="POST" action="user" modelAttribute="user" role="form">
 	<div class="modal-body">
 		<form:hidden path="id" />
-		<form:hidden path="state" />
-		<form:hidden path="passwd" />
+		<form:hidden path="passwdEncoded" />
 
 		<div class="form-group required">
 			<form:label class="${ col_1 } control-label" path="firstName">
@@ -65,9 +64,9 @@
 		<div class="form-group required">
 			<label class="${ col_1 } control-label"><s:message code="user.label.role" /></label>
 			<div class="${ col_2 }">
-				<form:select class="form-control" path="userProfiles" items="${ roles }" itemValue="id" itemLabel="type" multiple="false" />
+				<form:select class="form-control" path="profiles" items="${ roles }" multiple="false" />
 				<div class="has-error">
-					<form:errors path="userProfiles" class="help-inline" />
+					<form:errors path="profiles" class="help-inline" />
 				</div>
 			</div>
 		</div>

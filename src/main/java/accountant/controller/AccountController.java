@@ -125,8 +125,6 @@ public class AccountController extends BaseController {
 							  HttpServletResponse response, @RequestParam String action) {
 		List<Notification> notifications = new ArrayList<>();
 
-
-
 		try {
 			switch (EditType.valueOf(action.toUpperCase())) {
 			case ACCOUNT:
