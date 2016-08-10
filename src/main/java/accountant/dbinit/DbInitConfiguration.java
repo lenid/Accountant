@@ -85,7 +85,7 @@ public class DbInitConfiguration {
 	}
 	
 	@Bean
-	public ProfileDao profileDao() {
+	public ProfileDao userProfileDao() {
 		return new ProfileDaoImpl();
 	}
 	
@@ -104,6 +104,17 @@ public class DbInitConfiguration {
 		return new MessageServiceDbInit();
 	}
 
+
+//	@Bean
+//	public ShortUserDaoImpl shortUserDao() {
+//		return new ShortUserDaoImpl();
+//	}
+//	
+//	@Bean
+//	public ShortUserService shortUserService() {
+//		return new ShortUserService();
+//	}
+	
     protected Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));

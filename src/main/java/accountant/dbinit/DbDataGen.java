@@ -1,10 +1,9 @@
 package accountant.dbinit;
 
 import accountant.constants.Profile;
-import accountant.dao.ProfileDao;
 import accountant.models.db.MessageDb;
 import accountant.models.db.ProfileDb;
-import accountant.models.ui.ProfileUi;
+import accountant.models.db.UserDb;
 import accountant.models.ui.UserUi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import accountant.dbinit.DbInitConfiguration.MessageServiceDbInit;
@@ -25,7 +24,6 @@ public class DbDataGen {
 
     private UserService userService;
     private UserProfileService userProfileService;
-    private ProfileDao profileDao;
     private UserProfileServiceDbInit userProfileDaoInit;
     private MessageServiceDbInit messageService;
     private ApplicationContext ctx;
@@ -37,7 +35,6 @@ public class DbDataGen {
         userProfileService = ctx.getBean(UserProfileService.class);
         userProfileDaoInit = ctx.getBean(UserProfileServiceDbInit.class);
         messageService = ctx.getBean(MessageServiceDbInit.class);
-        profileDao = ctx.getBean(ProfileDao.class);
 
     }
 
@@ -92,18 +89,18 @@ public class DbDataGen {
     public void dbInit() {
         messageService.deleteAll();
 
-        createUserProfiles();
+        createUserProfile();
 
         createUser(LOGIN, PASSWD, "Andriy", Profile.ADMIN);
 
         ((ConfigurableApplicationContext) ctx).close();
     }
 
-    private void createUserProfiles() {
+    private void createUserProfile() {
         Profile[] profiles = Profile.values();
 
         for (Profile profile : profiles) {
-            ProfileUi profileSaved = userProfileService.findByType(profile.toString());
+            Profile profileSaved = userProfileService.findByType(profile.toString());
 
             if (profileSaved == null) {
                 ProfileDb profileDB = new ProfileDb();
@@ -126,7 +123,7 @@ public class DbDataGen {
         user.setFirstName(firstName);
         user.setLastName("Losoviy");
         user.setEmail(login + "@mail.ru");
-        user.setProfiles(new HashSet<>(Arrays.asList(new ProfileUi(profile))));
+        user.setProfiles(new HashSet<Profile>(Arrays.asList(profile)));
 
         userService.persist(user);
     }
