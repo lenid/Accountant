@@ -65,7 +65,14 @@
 		<div class="form-group required">
 			<label class="${ col_1 } control-label"><s:message code="user.label.role" /></label>
 			<div class="${ col_2 }">
-				<form:select class="form-control" path="profiles" items="${ roles }" itemValue="value" itemLabel="name" multiple="true" />
+				<%--<form:select class="form-control" path="profiles" items="${ roles }" itemValue="value" itemLabel="name" multiple="true" />--%>
+				<form:select class="form-control" path="profiles" multiple="true">
+					<c:forEach var="role" items="${roles}">
+						<form:option value="${role.value}">
+							<s:message code="${role.name}" />
+						</form:option>
+					</c:forEach>
+				</form:select>
 				<div class="has-error">
 					<form:errors path="profiles" class="help-inline" />
 				</div>

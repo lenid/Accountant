@@ -11,7 +11,7 @@ public class ProfileUi {
 
     public ProfileUi(Profile profile) {
         this.value = profile.toString().toUpperCase();
-        this.name = "Name of " + profile;
+        this.name = "profile.name." + profile.toString().toLowerCase();
     }
 
     public String getValue() {
