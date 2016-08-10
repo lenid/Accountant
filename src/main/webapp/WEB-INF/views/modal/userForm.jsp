@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:set var="col_1" value="col-lg-4" />
 <c:set var="col_2" value="col-lg-7" />
@@ -64,7 +65,7 @@
 		<div class="form-group required">
 			<label class="${ col_1 } control-label"><s:message code="user.label.role" /></label>
 			<div class="${ col_2 }">
-				<form:select class="form-control" path="profiles" items="${ roles }" multiple="false" />
+				<form:select class="form-control" path="profiles" items="${ roles }" itemValue="value" itemLabel="name" multiple="true" />
 				<div class="has-error">
 					<form:errors path="profiles" class="help-inline" />
 				</div>

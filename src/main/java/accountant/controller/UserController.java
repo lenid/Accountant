@@ -1,9 +1,13 @@
 package accountant.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import accountant.constants.Profile;
 import accountant.models.db.UserDb;
+import accountant.models.ui.ProfileUi;
 import accountant.models.ui.UserUi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -54,7 +58,15 @@ public class UserController extends BaseController {
 		}
 
 		model.addObject("user", userUi);
-		model.addObject("roles", userProfileService.findAll());
+//		model.addObject("roles", userProfileService.findAll());
+		ProfileUi profileUiAdmin = new ProfileUi(Profile.ADMIN);
+		ProfileUi profileUiUser = new ProfileUi(Profile.USER);
+
+		List<ProfileUi> profileUiSet = new ArrayList<>();
+		profileUiSet.add(profileUiAdmin);
+		profileUiSet.add(profileUiUser);
+
+		model.addObject("roles", profileUiSet);
 
 		return model;
 	}
