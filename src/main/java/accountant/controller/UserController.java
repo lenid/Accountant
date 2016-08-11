@@ -1,7 +1,6 @@
 package accountant.controller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,54 +18,54 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import accountant.data.Notification;
-import accountant.service.UserProfileService;
+import accountant.service.ProfileService;
 import accountant.service.UserService;
 
 @Controller
 @RequestMapping(value = "/user")
 public class UserController extends BaseController {
 
+	public static final String JSP_KEY_USER = "user";
+	public static final String JSP_KEY_USERS = "users";
+	public static final String JSP_KEY_USER_HEADER = "userHeader";
+	public static final String JSP_KEY_PROFILE_UI_LIST = "profileUiList";
+
+	public static final String JSP_PAGE_USERS = "users";
+	public static final String JSP_PAGE_USER_FORM = "modal/userForm";
+
 	@Autowired
 	UserService userService;
 
 	@Autowired
-	UserProfileService userProfileService;
+	ProfileService userProfileService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView getAll(@ModelAttribute ArrayList<Notification> notifications) {
-		ModelAndView model = new ModelAndView("users");
+		ModelAndView model = new ModelAndView(JSP_PAGE_USERS);
 		defaultModelInitialize(model, notifications, "users.header");
 
 		Set<UserUi> userUiSet = userService.getAll();
-		model.addObject("users", userUiSet);
-		model.addObject("user", new UserUi());
+		model.addObject(JSP_KEY_USERS, userUiSet);
+		model.addObject(JSP_KEY_USER, new UserUi());
 
 		return model;
 	}
 
 	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView getUserAjax(@PathVariable int userId) {
-		ModelAndView model = new ModelAndView("modal/userForm");
+		ModelAndView model = new ModelAndView(JSP_PAGE_USER_FORM);
 
 		UserUi userUi = null;
 		if (userId == 0) {
 			userUi = new UserUi();
-			model.addObject("userHeader", "users.popup_user.header.create");
+			model.addObject(JSP_KEY_USER_HEADER, "users.popup_user.header.create");
 		} else {
 			userUi = userService.findById(userId);
-			model.addObject("userHeader", "users.popup_user.header.edit");
+			model.addObject(JSP_KEY_USER_HEADER, "users.popup_user.header.edit");
 		}
 
-		model.addObject("user", userUi);
-//		model.addObject("roles", userProfileService.findAll());
-		ProfileUi profileUiAdmin = new ProfileUi(Profile.ADMIN);
-		ProfileUi profileUiUser = new ProfileUi(Profile.USER);
-
-		List<ProfileUi> profileUiSet = new ArrayList<>();
-		profileUiSet.add(profileUiAdmin);
-		profileUiSet.add(profileUiUser);
-
-		model.addObject("roles", profileUiSet);
+		model.addObject(JSP_KEY_USER, userUi);
+		model.addObject(JSP_KEY_PROFILE_UI_LIST, userProfileService.findAll());
 
 		return model;
 	}

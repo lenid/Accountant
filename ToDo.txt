@@ -1,0 +1,1 @@
+Button delete is active on create new user popup

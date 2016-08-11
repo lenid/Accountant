@@ -67,9 +67,9 @@
 			<div class="${ col_2 }">
 				<%--<form:select class="form-control" path="profiles" items="${ roles }" itemValue="value" itemLabel="name" multiple="true" />--%>
 				<form:select class="form-control" path="profiles" multiple="true">
-					<c:forEach var="role" items="${roles}">
-						<form:option value="${role.value}">
-							<s:message code="${role.name}" />
+					<c:forEach var="profile" items="${profileUiList}">
+						<form:option value="${profile.value}">
+							<s:message code="${profile.name}" />
 						</form:option>
 					</c:forEach>
 				</form:select>

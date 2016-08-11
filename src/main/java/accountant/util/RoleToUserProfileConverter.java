@@ -1,13 +1,10 @@
 package accountant.util;
 
-import accountant.constants.Profile;
 import accountant.dao.ProfileDao;
 import accountant.models.db.ProfileDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-
-import accountant.service.UserProfileService;
 
 @Component
 public class RoleToUserProfileConverter implements Converter<Object, ProfileDb> {

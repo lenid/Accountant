@@ -2,9 +2,8 @@ package accountant.controller;
 
 import accountant.constants.Profile;
 import accountant.data.Notification;
-import accountant.models.db.UserDb;
 import accountant.models.ui.UserUi;
-import accountant.service.UserProfileService;
+import accountant.service.ProfileService;
 import accountant.service.UserService;
 import accountant.util.SecurityHelper;
 import org.apache.log4j.Logger;
@@ -42,7 +41,7 @@ public class AccountController extends BaseController {
 	UserService userService;
 
 	@Autowired
-	UserProfileService userProfileService;
+	ProfileService profileService;
 
 	@Autowired
 	@Qualifier("authenticationManager")
@@ -115,7 +114,7 @@ public class AccountController extends BaseController {
 		UserUi userUi = userService.findBySso(SecurityHelper.getSso());
 
 		model.addObject("user", userUi);
-		model.addObject("roles", userProfileService.findAll());
+		model.addObject("roles", profileService.findAll());
 
 		return model;
 	}
@@ -240,7 +239,7 @@ public class AccountController extends BaseController {
 	// Need test
 //	@ModelAttribute("roles")
 //	public List<ProfileDb> initializeProfiles() {
-//		return userProfileService.findAll();
+//		return profileService.findAll();
 //	}
 
 }
