@@ -47,6 +47,8 @@ public class UserController extends BaseController {
 		Set<UserUi> userUiSet = userService.getAll();
 		model.addObject(JSP_KEY_USERS, userUiSet);
 		model.addObject(JSP_KEY_USER, new UserUi());
+		model.addObject(JSP_KEY_PROFILE_UI_LIST, userProfileService.findAll());
+
 
 		return model;
 	}

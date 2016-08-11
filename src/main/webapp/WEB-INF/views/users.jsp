@@ -74,7 +74,13 @@
 											<fmt:formatDate value="${ user.created }" pattern='${ dateFormat }' />
 										</nobr></td>
 									<td><c:forEach var="profile" items="${ user.profiles }">
-											<span>${ profile }</span>
+											<span>
+												<c:forEach var="profileUi" items="${ profileUiList }">
+													<c:if test="${profileUi.value == profile}" >
+														<s:message code="${profileUi.name}" />
+													</c:if>
+												</c:forEach>
+											</span>
 										</c:forEach></td>
 								</tr>
 							</c:forEach>
