@@ -1,6 +1,7 @@
 package accountant.models.converters;
 
 import accountant.constants.Profile;
+import accountant.constants.State;
 import accountant.dao.ProfileDao;
 import accountant.models.db.ProfileDb;
 import accountant.models.db.UserDb;
@@ -21,12 +22,6 @@ import java.util.stream.Collectors;
 
 public class UserUiToDbConverter implements Converter<UserUi, UserDb> {
 
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-//
-//    @Autowired
-//    private ProfileDao profileDao;
-
     @Autowired
     private ConversionServiceFactoryBean conversionServiceFactoryBean;
 
@@ -41,6 +36,7 @@ public class UserUiToDbConverter implements Converter<UserUi, UserDb> {
         userDb.setLastName(userUi.getLastName());
         userDb.setEmail(userUi.getEmail());
         userDb.setCreated(userUi.getCreated());
+        userDb.setState(State.ACTIVE.toString());
 
         ConversionService conversionService = conversionServiceFactoryBean.getObject();
         Set<ProfileDb> profileDbSet = userUi.getProfiles().stream().map((p) -> conversionService.convert(p, ProfileDb.class)).collect(Collectors.toSet());

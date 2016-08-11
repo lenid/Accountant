@@ -6,9 +6,6 @@ import accountant.models.db.ProfileDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  * @author lehr0416 on 08-Aug-16.
  */

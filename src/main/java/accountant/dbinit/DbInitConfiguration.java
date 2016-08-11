@@ -1,13 +1,9 @@
 package accountant.dbinit;
 
-import accountant.constants.Profile;
 import accountant.dao.AbstractDao;
-import accountant.models.db.MessageDb;
 import accountant.models.db.ProfileDb;
 import accountant.models.db.UserDb;
-import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -19,7 +15,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -40,11 +35,6 @@ public class DbInitConfiguration {
     public UserServiceDbInit userServiceDbInitSaver() {
         return new UserServiceDbInit();
     }
-
-//	@Bean
-//	public MessageServiceDbInit messageService() {
-//		return new MessageServiceDbInit();
-//	}
 
     
     // Service implementation
@@ -70,24 +60,6 @@ public class DbInitConfiguration {
         }
 
     }
-
-//    @Transactional
-//	class MessageServiceDbInit extends AbstractDao<Integer, MessageDb> {
-//
-//    	public void deleteAll() {
-//    		Set<MessageDb> allMessages = getAll();
-//
-//    		for (MessageDb message : allMessages) {
-//    			delete(message);
-//    		}
-//    	}
-//
-//    	@Override
-//    	public void persist(MessageDb entity) {
-//    		super.persist(entity);
-//    	}
-//
-//	}
 
 
 	// DB config

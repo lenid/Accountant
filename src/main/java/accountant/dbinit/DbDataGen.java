@@ -29,7 +29,6 @@ public class DbDataGen {
         new DbDataGen().dbInit();
     }
 
-
     public void dbInit() {
         createUserProfiles();
         createUser(LOGIN, PASSWD, "Andriy");

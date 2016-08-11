@@ -1,5 +1,6 @@
 package accountant.service;
 
+import accountant.constants.State;
 import accountant.models.db.UserDb;
 import accountant.models.db.ProfileDb;
 import accountant.models.ui.UserUi;
@@ -27,8 +28,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 		if (userDb == null) {
 			throw new UsernameNotFoundException("Username not found");
 		}
+
+		boolean isActiveUser = State.valueOf(userDb.getState().toUpperCase()) == State.ACTIVE;
 		return new org.springframework.security.core.userdetails.User(userDb.getSsoId(), userDb.getPasswd(), true,
-				true, true, true, getGrantedAuthorities(userDb));
+				true, true, isActiveUser, getGrantedAuthorities(userDb));
 	}
 
 	private List<GrantedAuthority> getGrantedAuthorities(UserDb userDb) {
