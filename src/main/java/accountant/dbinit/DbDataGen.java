@@ -60,32 +60,6 @@ public class DbDataGen {
 //		System.out.println(json);
     }
 
-
-    void test() throws Throwable {
-        UserUi user = userService.findBySso("user_9");
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        System.out.println("================================================================");
-        String json = mapper.writeValueAsString(user);
-        System.out.println(json);
-
-        UserUi u = mapper.readValue(json, UserUi.class);
-
-        u.setLastName(new Date().toString());
-
-        MessageDb message = new MessageDb();
-//		message.setFrom(userService.findBySso("user_8"));
-//		message.setTo(userService.findBySso("user_9"));
-        message.setSubject("subject");
-        message.setBody("BODY2");
-
-
-        userService.update(u);
-
-        System.out.println();
-    }
-
     public void dbInit() {
         messageService.deleteAll();
 

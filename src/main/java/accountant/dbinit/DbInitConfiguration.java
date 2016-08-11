@@ -6,6 +6,7 @@ import accountant.dao.ProfileDao;
 import accountant.dao.impl.MessageDaoImpl;
 import accountant.dao.impl.UserDaoImpl;
 import accountant.dao.impl.ProfileDaoImpl;
+import accountant.models.converters.*;
 import accountant.models.db.MessageDb;
 import accountant.models.db.ProfileDb;
 import accountant.service.UserProfileService;
@@ -16,6 +17,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -24,8 +26,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.core.convert.converter.Converter;
 
 import javax.sql.DataSource;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -104,17 +108,22 @@ public class DbInitConfiguration {
 		return new MessageServiceDbInit();
 	}
 
+	@Bean
+	@Autowired
+	public ConversionServiceFactoryBean ConversationServiceWrapper() {
+		Set<Converter> converters = new HashSet<>();
+		converters.add(new UserDbToUiConverter());
+		converters.add(new UserUiToDbConverter());
+		converters.add(new ProfileFromDbConverter());
+		converters.add(new ProfileToDbConverter());
 
-//	@Bean
-//	public ShortUserDaoImpl shortUserDao() {
-//		return new ShortUserDaoImpl();
-//	}
-//	
-//	@Bean
-//	public ShortUserService shortUserService() {
-//		return new ShortUserService();
-//	}
-	
+		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
+		conversionServiceFactoryBean.setConverters(converters);
+		conversionServiceFactoryBean.afterPropertiesSet();
+		return conversionServiceFactoryBean;
+	}
+
+
     protected Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
