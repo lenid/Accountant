@@ -60,7 +60,7 @@ public class SecurityHelper {
 		return false;
 	}
 
-	public static String getHashPassword(String password) {
+	public static String getEncodedPassword(String password) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String hashedPassword = passwordEncoder.encode(password);
 		return hashedPassword;
