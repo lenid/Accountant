@@ -57,6 +57,7 @@
 					<form:form id="userForm" class="form-horizontal" method="POST" action="${ action }" modelAttribute="user" role="form">
 						<form:hidden path="id" />
 						<form:hidden path="passwdEncoded" />
+						<form:hidden path="profiles" />
 
 						<div class="form-group required">
 							<form:label class="${ col_1 } control-label" path="firstName">

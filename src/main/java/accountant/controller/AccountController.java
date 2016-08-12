@@ -120,26 +120,26 @@ public class AccountController extends BaseController {
 	}
 
 	@RequestMapping(value = "/account", method = RequestMethod.POST)
-	public String editAccount(@ModelAttribute("user") UserUi user, RedirectAttributes redirectAttributes, HttpServletRequest request,
+	public String editAccount(@ModelAttribute("user") UserUi userUi, RedirectAttributes redirectAttributes, HttpServletRequest request,
 							  HttpServletResponse response, @RequestParam String action) {
 		List<Notification> notifications = new ArrayList<>();
 
 		try {
 			switch (EditType.valueOf(action.toUpperCase())) {
 			case ACCOUNT:
-				userService.update(user);
+				userService.update(userUi);
 				notifications.add(new Notification("user.notification.success.update.account"));
 				break;
 			case PASSWD:
-				if (checkPasswd(user)) {
-					userService.update(user);
+				if (checkPasswd(userUi)) {
+					userService.update(userUi);
 					notifications.add(new Notification("user.notification.success.update.passwd"));
 				} else {
 					notifications.add(new Notification("user.notification.warning.update.passwd.wrong_passwd"));
 				}
 				break;
 			case SSO_ID:
-				editSsoId(user, notifications, request, response);
+				editSsoId(userUi, notifications, request, response);
 				break;
 			default:
 				logger.error("Unimplemented \"EditType\" value case!");
