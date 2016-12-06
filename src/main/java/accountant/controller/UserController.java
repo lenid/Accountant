@@ -79,7 +79,7 @@ public class UserController extends BaseController {
             userService.update(userUi);
         }
 
-        return "redirect:/user";
+        return "redirect:/users";
     }
 
     @RequestMapping(value = "/user/delete", method = RequestMethod.POST)

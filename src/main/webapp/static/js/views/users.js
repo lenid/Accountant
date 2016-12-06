@@ -34,7 +34,7 @@ function getUser(id) {
             $('#userFormModal').modal('show');
         },
         error : function(e) {
-            //alert("error" + e);
+            alert("error" + e);
         }
     });
 }
