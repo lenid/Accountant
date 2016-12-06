@@ -3,10 +3,9 @@ package accountant.controller;
 import java.util.*;
 
 import accountant.constants.Profile;
-import accountant.models.db.UserDb;
-import accountant.models.ui.ProfileUi;
 import accountant.models.ui.UserUi;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,8 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 import accountant.data.Notification;
 import accountant.service.ProfileService;
 import accountant.service.UserService;
-
-import javax.servlet.RequestDispatcher;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -86,16 +83,10 @@ public class UserController extends BaseController {
         return "redirect:/user";
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public String deleteUserAjaxGet() {
-//        userService.delete(userId);
-        return "redirect:/user";
-    }
-
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public String deleteUserAjax(@RequestParam("temp") Object userId) {
-//		userService.delete(userId);
-        return "redirect:/user";
+    public @ResponseBody HttpStatus deleteUserAjax(@RequestBody Integer userId) {
+		userService.delete(userId);
+        return HttpStatus.OK;
     }
 
 }

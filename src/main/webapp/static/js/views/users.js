@@ -7,18 +7,14 @@ function deleteUser(dialogHeader, dialogBody, id) {
             },
             url : "user/delete",
             datatype : "json",
-            type : "GET",
+            type : "POST",
             async : 'true',
-            data : JSON.stringify({
-                "id" : id,
-                "temp" : "25",
-                "token" : csrf_token
-            }),
+            data : JSON.stringify(id),
             beforeSend : function(xhr) {
                 xhr.setRequestHeader('X-CSRF-Token', csrf_token);
             },
             success : function(response) {
-                alert("ok");
+                location.reload();
             },
             error : function(request, status, error) {
                 alert("ERROR!!!!!!!");
