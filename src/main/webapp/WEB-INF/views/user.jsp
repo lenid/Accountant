@@ -235,10 +235,6 @@
 		</div>
 	</div>
 
-	<script type="text/javascript">
-
-
-	</script>
 	<%@include file="include/userValidator.js.jsp"%>
 </body>
 </html>

@@ -143,7 +143,7 @@
 	function eventDrawFired() {
 		$(document).ready(function (){
 			var delButton = $('#mainTable').DataTable().button( 2 );
-		
+
 			if ($( "input:checked" ).length == 0) {
 	    		delButton.disable();
 			} else {
@@ -151,35 +151,35 @@
 			}
 		});
 	}
-	
+
 	$(".messageCheckbox").change(function() {
 		var delButton = $('#mainTable').DataTable().button( 2 );
-		
+
 		if(this.checked) {
 			delButton.enable();
 	    } else if ($( "input:checked" ).length == 0) {
 	    	delButton.disable();
 	    }
 	});
-	
+
 	function selectAll() {
 		$( ".messageCheckbox" ).each(function( index ) {
 			$( this ).prop("checked", true);
 		});
-		
+
 		var delButton = $('#mainTable').DataTable().button( 2 );
 		delButton.enable();
 	}
-	
+
 	function deselectAll() {
 		$( ".messageCheckbox" ).each(function( index ) {
 			$( this ).prop("checked", false);
 		});
-		
+
 		var delButton = $('#mainTable').DataTable().button( 2 );
 		delButton.disable();
 	}
-	
+
 	function getMessage(id) {
 		$.ajax({
 			url : 'message',

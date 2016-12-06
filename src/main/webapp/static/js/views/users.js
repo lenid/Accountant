@@ -7,10 +7,11 @@ function deleteUser(dialogHeader, dialogBody, id) {
             },
             url : "user/delete",
             datatype : "json",
-            type : "POST",
-            async : 'false',
+            type : "GET",
+            async : 'true',
             data : JSON.stringify({
                 "id" : id,
+                "temp" : "25",
                 "token" : csrf_token
             }),
             beforeSend : function(xhr) {

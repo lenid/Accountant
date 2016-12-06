@@ -1,4 +1,4 @@
-Button delete is active on create new user popup
-Move all js code from jsp to js files
 fix delete user entity
 get all users - link from user to users
+
+Move all js code from jsp to js files
