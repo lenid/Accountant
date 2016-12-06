@@ -20,6 +20,7 @@
 	<div class="modal-body">
 		<form:hidden path="id" />
 		<form:hidden path="passwdEncoded" />
+		<form:hidden path="profiles" />
 
 		<div class="form-group required">
 			<form:label class="${ col_1 } control-label" path="firstName">
@@ -83,13 +84,19 @@
 			<button class="btn btn-default" type="button" data-dismiss="modal">
 				<s:message code="global.button.cancel" />
 			</button>
-			<button class="btn btn-danger" type="button" onclick="deleteUser()">
-				<s:message code="global.button.delete" />
-			</button>
-			<button id="submitButton" class="btn btn-primary" type="submit">
+			<c:if test="${isEditMode}">
+				<button class="btn btn-danger" type="button" onclick="deleteUser('<s:message code="users.popup_confirm.header" />', '<s:message code="users.popup_confirm.body" />', ${user.id})">
+					<s:message code="global.button.delete" />
+				</button>
+			</c:if>
+			<button class="btn btn-primary" type="submit">
 				<s:message code="global.button.save" />
 			</button>
 		</div>
 
 	</div>
 </form:form>
+
+<script type="text/javascript">
+	var csrf_token = $("input[name='_csrf']").val();
+</script>

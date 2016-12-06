@@ -4,8 +4,6 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<!-- s:eval expression="T(gran.home.template.util.SecurityHelper).isAdmin()" var="isAdmin" /-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +29,8 @@
 <script src="static/vendors/jquery/dataTables.bootstrap.min.js"></script>
 <script src="static/vendors/cdn.datatables.net/buttons/1.1.2/js/dataTables.buttons.min.js"></script>
 <script src="static/js/moment.js"></script>
+<script src="static/js/views/users.js"></script>
+<script src="static/js/views/common.js"></script>
 </head>
 
 <c:set var="dateFormat">
@@ -101,30 +101,7 @@
 	<%@include file="modal/confirmDialog.jsp"%>
 
 	<script type="text/javascript">
-	
-	function deleteUser() {
-		deleteConfirm('<s:message code="users.popup_confirm.header" />', '<s:message code="users.popup_confirm.body" />', function () { 
-			$('#userForm').attr("action", "user/delete");
-			$('#userForm')[0].submit();
-		});
-	}
-	
-	function getUser(id) {
-		$.ajax({
-			url : "user/" + id,
-			type : 'GET',
-			async : 'true',
-			success : function(data) {
-				$('#modalContentUserForm').html(data);
-				validateUserForm('#userForm', true);
-				$('#userFormModal').modal('show');
-			},
-			error : function(e) {
-				//alert("error" + e);
-			}
-		});
-	}
-	
+
 	$(document).ready(function()
 		{$('#mainTable').DataTable({
 			"order" : [ 4, 'asc' ],
@@ -153,18 +130,18 @@
 				    "search":         '<s:message code="table.search" />',
 				    "zeroRecords":    '<s:message code="table.zero_records" />'
 	        },
-	        "buttons" : 
+	        "buttons" :
 				[{
 					text: '<s:message code="users.button.user_create" />',
 			        action: function ( e, dt, node, config ) {
-			        	getUser(0); 
+			        	getUser(0);
 				}}],
-			    
-			"columnDefs": 
+
+			"columnDefs":
 			    [
 			    	 { "type": "enum", targets: 1 },
 	            ],
-	            
+
 	         "pageLength": <s:message code="jsp.userListLength" />
 			});
 		});
