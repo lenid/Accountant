@@ -15,7 +15,6 @@ import accountant.service.ProfileService;
 import accountant.service.UserService;
 
 @Controller
-@RequestMapping(value = "/user")
 public class UserController extends BaseController {
 
     public static final String JSP_KEY_USER = "user";
@@ -33,7 +32,7 @@ public class UserController extends BaseController {
     @Autowired
     ProfileService userProfileService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
     public ModelAndView getAll(@ModelAttribute ArrayList<Notification> notifications) {
         ModelAndView model = new ModelAndView(JSP_PAGE_USERS);
         defaultModelInitialize(model, notifications, "users.header");
@@ -47,7 +46,7 @@ public class UserController extends BaseController {
         return model;
     }
 
-    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
     public ModelAndView getUserAjax(@PathVariable int userId) {
         ModelAndView model = new ModelAndView(JSP_PAGE_USER_FORM);
 
@@ -68,7 +67,7 @@ public class UserController extends BaseController {
         return model;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
     public String createOrUpdateUserAjax(@ModelAttribute("user") UserUi userUi) {
         if (userService.isDuplicatedSsoId(userUi)) {
 
@@ -83,7 +82,7 @@ public class UserController extends BaseController {
         return "redirect:/user";
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/delete", method = RequestMethod.POST)
     public @ResponseBody HttpStatus deleteUserAjax(@RequestBody Integer userId) {
 		userService.delete(userId);
         return HttpStatus.OK;
