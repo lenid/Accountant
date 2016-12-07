@@ -17,14 +17,14 @@ import accountant.service.UserService;
 @Controller
 public class UserController extends BaseController {
 
-    public static final String JSP_KEY_USER = "user";
-    public static final String JSP_KEY_USERS = "users";
-    public static final String JSP_KEY_USER_HEADER = "userHeader";
-    public static final String JSP_KEY_PROFILE_UI_LIST = "profileUiList";
-    public static final String JSP_KEY_IS_EDIT_MODE = "isEditMode";
+    static final String JSP_KEY_USER = "user";
+    static final String JSP_KEY_USERS = "users";
+    static final String JSP_KEY_USER_HEADER = "userHeader";
+    static final String JSP_KEY_PROFILE_UI_LIST = "profileUiList";
+    static final String JSP_KEY_IS_EDIT_MODE = "isEditMode";
 
-    public static final String JSP_PAGE_USERS = "users";
-    public static final String JSP_PAGE_USER_FORM = "modal/userForm";
+    static final String JSP_PAGE_USERS = "users";
+    static final String JSP_PAGE_USER_FORM = "modal/userForm";
 
     @Autowired
     UserService userService;

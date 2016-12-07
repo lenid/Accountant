@@ -1,9 +1,12 @@
 package accountant.dbinit;
 
 import accountant.constants.Profile;
+import accountant.constants.StateOfAppointment;
 import accountant.dbinit.DbInitConfiguration.*;
+import accountant.models.db.AppointmentDb;
 import accountant.models.db.ProfileDb;
 import accountant.models.db.UserDb;
+import accountant.models.ui.UserUi;
 import accountant.util.SecurityHelper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -16,12 +19,14 @@ public class DbDataGen {
     private ApplicationContext ctx;
     private ProfileServiceDbInit profileDao;
     private UserServiceDbInit userDao;
+    private AppointmentServiceDbInit appointmentDao;
 
     private DbDataGen() {
         ctx = new AnnotationConfigApplicationContext(DbInitConfiguration.class);
 
         profileDao = ctx.getBean(ProfileServiceDbInit.class);
         userDao = ctx.getBean(UserServiceDbInit.class);
+        appointmentDao = ctx.getBean(AppointmentServiceDbInit.class);
 
     }
 
@@ -30,8 +35,24 @@ public class DbDataGen {
     }
 
     public void dbInit() {
-        createUserProfiles();
-        createUser(LOGIN, PASSWD, "Andriy");
+        // init admin
+//        createUserProfiles();
+//        createUser(LOGIN, PASSWD, "Andriy");
+
+        // init doctor
+        UserDb doctor = createUser("Doctor", PASSWD, "Doctor");
+
+        // init patients
+        UserDb ivan = createUser("Ivan", PASSWD, "Ivan");
+        UserDb igor = createUser("Igor", PASSWD, "Igor");
+
+        // init appointment
+        createAppointment(doctor, ivan);
+        createAppointment(doctor, ivan);
+        createAppointment(doctor, ivan);
+
+        createAppointment(doctor, igor);
+        createAppointment(doctor, igor);
 
         ((ConfigurableApplicationContext) ctx).close();
     }
@@ -46,7 +67,7 @@ public class DbDataGen {
         }
     }
 
-    private void createUser(String login, String passwd, String firstName) {
+    private UserDb createUser(String login, String passwd, String firstName) {
         UserDb user = new UserDb();
 
         user.setSsoId(login);
@@ -57,6 +78,21 @@ public class DbDataGen {
         user.setProfiles(profileDao.getAll());
 
         userDao.persist(user);
+
+        return user;
+    }
+
+    private void createAppointment(UserDb doctor, UserDb patient) {
+        AppointmentDb appointment = new AppointmentDb();
+
+//        appointment.setPlanned();
+        appointment.setPatient(patient);
+        appointment.setDoctor(doctor);
+        appointment.setPrice(15.26);
+        appointment.setNote("Doctor is " + doctor.getFirstName() + ", patient is " + patient.getFirstName());
+        appointment.setState(StateOfAppointment.PLANNED.toString());
+
+        appointmentDao.persist(appointment);
     }
 
 }

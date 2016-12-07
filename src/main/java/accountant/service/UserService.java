@@ -4,13 +4,12 @@ import accountant.models.ui.UserUi;
 
 import java.util.Set;
 
-
 public interface UserService {
-	public void persist(UserUi user);
-	public Set<UserUi> getAll();
-	public UserUi findById(int id);
-	public UserUi findBySso(String sso);
-	public void update(UserUi user);
-	public void delete(int userId);
-	public boolean isDuplicatedSsoId(UserUi user);
+	void persist(UserUi user);
+	Set<UserUi> getAll();
+	UserUi findById(int id);
+	UserUi findBySso(String sso);
+	void update(UserUi user);
+	void delete(int userId);
+	boolean isDuplicatedSsoId(UserUi user);
 }

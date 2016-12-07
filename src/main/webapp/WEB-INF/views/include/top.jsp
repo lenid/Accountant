@@ -22,6 +22,7 @@
 					<c:if test="${ isAdmin }">
 						<li><a href="<c:url value="/users"/>"><s:message code="header.link.users" /></a></li>
 					</c:if>
+					<li><a href="<c:url value="/appointments"/>"><s:message code="header.link.appointments" /></a></li>
 					<li><a href="<c:url value="/account"/>"><s:message code="header.link.account" /></a></li>
 					<li><a href="<c:url value="/logout"/>"><s:message code="header.link.logout" />, ${ userName }</a></li>
 				</c:if>

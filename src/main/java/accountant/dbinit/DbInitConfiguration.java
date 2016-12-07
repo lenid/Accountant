@@ -1,6 +1,7 @@
 package accountant.dbinit;
 
 import accountant.dao.AbstractDao;
+import accountant.models.db.AppointmentDb;
 import accountant.models.db.ProfileDb;
 import accountant.models.db.UserDb;
 import org.hibernate.SessionFactory;
@@ -36,6 +37,11 @@ public class DbInitConfiguration {
         return new UserServiceDbInit();
     }
 
+    @Bean
+    public AppointmentServiceDbInit appointmentServiceDbInitSaver() {
+        return new AppointmentServiceDbInit();
+    }
+
     
     // Service implementation
 
@@ -57,6 +63,15 @@ public class DbInitConfiguration {
 
         public void persist(UserDb userDb) {
             super.persist(userDb);
+        }
+
+    }
+
+    @Transactional
+    class AppointmentServiceDbInit extends AbstractDao<Integer, AppointmentDb> {
+
+        public void persist(AppointmentDb appointmentDb) {
+            super.persist(appointmentDb);
         }
 
     }

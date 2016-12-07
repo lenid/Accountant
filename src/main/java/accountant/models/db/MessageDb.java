@@ -41,7 +41,7 @@ public class MessageDb {
 	
 	@NotBlank
 	@Column(name="STATE", nullable=false)
-	private String state= State.ACTIVE.toString();
+	private String state = State.ACTIVE.toString();
 
 	public int getId() {
 		return id;

@@ -16,6 +16,7 @@
 		<intercept-url pattern="/users" access="hasRole('Admin')" />
 		<intercept-url pattern="/user" access="hasRole('Admin')" />
 		<intercept-url pattern="/user/*" access="hasRole('Admin')" />
+		<intercept-url pattern="/appointments" access="permitAll" />
 		<intercept-url pattern="/login" access="permitAll" />
 		<intercept-url pattern="/logout" access="permitAll" />
 		<intercept-url pattern="/signup" access="permitAll" />

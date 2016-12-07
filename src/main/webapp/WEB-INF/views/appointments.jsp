@@ -16,7 +16,6 @@
 <link href="static/vendors/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet">
 <link href="static/vendors/bootstrap/css/bootstrapValidator.min.css" type="text/css" rel="stylesheet">
 <link href="static/vendors/bootstrap/css/dataTables.bootstrap.min.css" type="text/css" rel="stylesheet">
-<link href="static/vendors/bootstrap/css/dataTables.bootstrap.min.css" type="text/css" rel="stylesheet">
 <link href="static/vendors/cdn.datatables.net/buttons/1.1.2/css/buttons.dataTables.min.css" type="text/css" rel="stylesheet">
 <link href="../static/css/dashboard.css" type="text/css" rel="stylesheet">
 
@@ -29,7 +28,7 @@
 <script src="static/vendors/jquery/dataTables.bootstrap.min.js"></script>
 <script src="static/vendors/cdn.datatables.net/buttons/1.1.2/js/dataTables.buttons.min.js"></script>
 <script src="static/js/moment.js"></script>
-<script src="static/js/views/users.js"></script>
+<script src="static/js/views/appointments.js"></script>
 <script src="static/js/views/common.js"></script>
 </head>
 
@@ -48,41 +47,39 @@
 				</h3>
 				<%@include file="include/notifications.jsp"%>
 
-				<!-- Appointments table -->
+				<!-- Users table -->
 				<div class="row">
 					<table id="mainTable" class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
 								<th>ID</th>
-								<th><s:message code="users.table.header.name_first" /></th>
-								<th><s:message code="users.table.header.name_last" /></th>
-								<th><s:message code="users.table.header.email" /></th>
-								<th><s:message code="users.table.header.sso_id" /></th>
-								<th><s:message code="users.table.header.created" /></th>
-								<th><s:message code="users.table.header.role" /></th>
+								<th><s:message code="appointments.table.header.created" /></th>
+								<th><s:message code="appointments.table.header.planned" /></th>
+								<th><s:message code="appointments.table.header.patient" /></th>
+								<th><s:message code="appointments.table.header.doctor" /></th>
+								<th><s:message code="appointments.table.header.price" /></th>
+								<th><s:message code="appointments.table.header.note" /></th>
+								<th><s:message code="appointments.table.header.state" /></th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="user" items="${ users }">
-								<tr id="userId_${ user.id }" class='clickable clickable-row' onclick="getUser(${ user.id })">
-									<td>${ user.id }</td>
-									<td>${ user.firstName }</td>
-									<td>${ user.lastName }</td>
-									<td>${ user.email }</td>
-									<td>${ user.ssoId }</td>
-									<td><nobr>
-											<fmt:formatDate value="${ user.created }" pattern='${ dateFormat }' />
-										</nobr></td>
+							<c:forEach var="appointment" items="${ appointmentSet }">
+								<tr id="appointmentId_${ appointment.id }" class='clickable clickable-row' onclick="getUser(${ appointment.id })">
+									<td>${ appointment.id }</td>
+									<td><nobr><fmt:formatDate value="${ appointment.created }" pattern='${ dateFormat }' /></nobr></td>
+									<td><nobr><fmt:formatDate value="${ appointment.planned }" pattern='${ dateFormat }' /></nobr></td>
+									<td>${ appointment.patient.firstName }</td>
+									<td>${ appointment.doctor.firstName }</td>
+									<td>${ appointment.price }</td>
+									<td>${ appointment.note }</td>
 									<td>
-										<c:forEach var="profile" items="${ user.profiles }">
-											<span>
-												<c:forEach var="profileUi" items="${ profileUiList }">
-													<c:if test="${profileUi.value == profile}" >
-														<s:message code="${profileUi.name}" />
-													</c:if>
-												</c:forEach>
-											</span>
-										</c:forEach>
+										<select class="selectpicker" data-style="btn-primary">
+											<c:forEach var="status" items="${ appointmentStatusList }">
+												<option value="${status}"<c:if test="${appointment.state == status}" > selected</c:if>>
+													<s:message code="${status}" />
+												</option>
+											</c:forEach>
+										</select>
 									</td>
 								</tr>
 							</c:forEach>
@@ -92,15 +89,6 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- User modal -->
-	<div id="userFormModal" class="modal fade" tabindex="-1" role="dialog">
-		<div class="modal-dialog">
-			<div id="modalContentUserForm" class="modal-content"></div>
-		</div>
-	</div>
-
-	<%@include file="modal/confirmDialog.jsp"%>
 
 	<script type="text/javascript">
 
@@ -148,6 +136,5 @@
 			});
 		});
 	</script>
-	<%@include file="include/userValidator.js.jsp"%>
 </body>
 </html>

@@ -22,6 +22,8 @@
                 <bean class="accountant.models.converters.ProfileToDbConverter" />
                 <bean class="accountant.models.converters.ProfileDbToUiConverter" />
                 <bean class="accountant.models.converters.ProfileUiToDbConverter" />
+                <bean class="accountant.models.converters.AppointmentDbToUiConverter" />
+                <bean class="accountant.models.converters.AppointmentUiToDbConverter" />
             </set>
         </property>
     </bean>

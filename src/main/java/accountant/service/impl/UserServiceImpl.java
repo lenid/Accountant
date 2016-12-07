@@ -1,18 +1,16 @@
 package accountant.service.impl;
 
+import accountant.dao.UserDao;
 import accountant.models.db.UserDb;
 import accountant.models.ui.UserUi;
 import accountant.service.BaseService;
 import accountant.service.UserService;
 import accountant.util.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl extends BaseService implements UserService {
 
 	@Autowired
-	private accountant.dao.UserDao dao;
+	private UserDao dao;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
