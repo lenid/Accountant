@@ -1,81 +1,91 @@
 package accountant.controller;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
+import accountant.constants.Profile;
+import accountant.models.ui.UserUi;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import accountant.data.Notification;
-import accountant.model.User;
-import accountant.service.UserProfileService;
+import accountant.service.ProfileService;
 import accountant.service.UserService;
 
 @Controller
-@RequestMapping(value = "/user")
 public class UserController extends BaseController {
 
-	@Autowired
-	UserService userService;
+    static final String JSP_KEY_USER = "user";
+    static final String JSP_KEY_USERS = "users";
+    static final String JSP_KEY_USER_HEADER = "userHeader";
+    static final String JSP_KEY_PROFILE_UI_LIST = "profileUiList";
+    static final String JSP_KEY_IS_EDIT_MODE = "isEditMode";
 
-	@Autowired
-	UserProfileService userProfileService;
+    static final String JSP_PAGE_USERS = "users";
+    static final String JSP_PAGE_USER_FORM = "modal/userForm";
 
-	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView getAll(@ModelAttribute ArrayList<Notification> notifications) {
-		ModelAndView model = new ModelAndView("users");
-		defaultModelInitialize(model, notifications, "users.header");
+    @Autowired
+    UserService userService;
 
-		Set<User> users = userService.getAllActived();
-		model.addObject("users", users);
-		model.addObject("user", new User());
+    @Autowired
+    ProfileService userProfileService;
 
-		return model;
-	}
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ModelAndView getAll(@ModelAttribute ArrayList<Notification> notifications) {
+        ModelAndView model = new ModelAndView(JSP_PAGE_USERS);
+        defaultModelInitialize(model, notifications, "users.header");
 
-	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-	public @ResponseBody ModelAndView getUserAjax(@PathVariable int userId) {
-		ModelAndView model = new ModelAndView("modal/userForm");
+        Set<UserUi> userUiSet = userService.getAll();
+        model.addObject(JSP_KEY_USERS, userUiSet);
+        model.addObject(JSP_KEY_USER, new UserUi());
+        model.addObject(JSP_KEY_PROFILE_UI_LIST, userProfileService.findAll());
 
-		User user = null;
-		if (userId == 0) {
-			user = new User();
-			model.addObject("userHeader", "users.popup_user.header.create");
-		} else {
-			user = userService.findById(userId);
-			model.addObject("userHeader", "users.popup_user.header.edit");
-		}
 
-		model.addObject("user", user);
-		model.addObject("roles", userProfileService.findAll());
+        return model;
+    }
 
-		return model;
-	}
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
+    public ModelAndView getUserAjax(@PathVariable int userId) {
+        ModelAndView model = new ModelAndView(JSP_PAGE_USER_FORM);
 
-	@RequestMapping(method = RequestMethod.POST)
-	public String createOrUpdateUserAjax(@ModelAttribute("user") User user) {
-		if (userService.isDuplicatedSsoId(user)) {
+        UserUi userUi = null;
+        if (userId == 0) {
+            userUi = new UserUi();
+            userUi.setProfiles(new HashSet<>(Arrays.asList(Profile.USER)));
+            model.addObject(JSP_KEY_USER_HEADER, "users.popup_user.header.create");
+        } else {
+            userUi = userService.findById(userId);
+            model.addObject(JSP_KEY_USER_HEADER, "users.popup_user.header.edit");
+            model.addObject(JSP_KEY_IS_EDIT_MODE, true);
+        }
 
-		}
+        model.addObject(JSP_KEY_USER, userUi);
+        model.addObject(JSP_KEY_PROFILE_UI_LIST, userProfileService.findAll());
 
-		if (user.getId() == 0) {
-			userService.persist(user);
-		} else {
-			userService.update(user);
-		}
-		return "redirect:/user";
-	}
+        return model;
+    }
 
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public String deleteUserAjax(@ModelAttribute("user") User user) {
-		userService.delete(user.getId());
-		return "redirect:/user";
-	}
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    public String createOrUpdateUserAjax(@ModelAttribute("user") UserUi userUi) {
+        if (userService.isDuplicatedSsoId(userUi)) {
+
+        }
+
+        if (userUi.getId() == 0) {
+            userService.persist(userUi);
+        } else {
+            userService.update(userUi);
+        }
+
+        return "redirect:/users";
+    }
+
+    @RequestMapping(value = "/user/delete", method = RequestMethod.POST)
+    public @ResponseBody HttpStatus deleteUserAjax(@RequestBody Integer userId) {
+		userService.delete(userId);
+        return HttpStatus.OK;
+    }
 
 }

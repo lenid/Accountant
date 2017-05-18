@@ -1,5 +1,7 @@
-package accountant.model;
+package accountant.models.db;
 
+import accountant.constants.State;
+import accountant.models.db.UserDb;
 import org.hibernate.annotations.GenerationTime;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -9,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="MESSAGES")
-public class Message {
+public class MessageDb {
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
@@ -30,16 +32,16 @@ public class Message {
 	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="FROM_USER_ID", nullable=false)
-	private User from;
+	private UserDb from;
 	
 	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="TO_USER_ID", nullable=false)
-	private User to;
+	private UserDb to;
 	
 	@NotBlank
 	@Column(name="STATE", nullable=false)
-	private String state=State.ACTIVE.toString();
+	private String state = State.ACTIVE.toString();
 
 	public int getId() {
 		return id;
@@ -69,19 +71,19 @@ public class Message {
 		this.body = body;
 	}
 
-	public User getFrom() {
+	public UserDb getFrom() {
 		return from;
 	}
 
-	public void setFrom(User from) {
+	public void setFrom(UserDb from) {
 		this.from = from;
 	}
 
-	public User getTo() {
+	public UserDb getTo() {
 		return to;
 	}
 
-	public void setTo(User to) {
+	public void setTo(UserDb to) {
 		this.to = to;
 	}
 
@@ -95,7 +97,7 @@ public class Message {
 
 	@Override
 	public String toString() {
-		return "Message [subject=" + subject + "]";
+		return "MessageDb [subject=" + subject + "]";
 	}
 	
 }

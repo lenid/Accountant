@@ -60,7 +60,7 @@
 					}
 				},
 
-				oldPasswd : {
+				passwdOld : {
 					validators : {
 						notEmpty : {
 							message : '<s:message code="user.valid.not_empty" />'
@@ -68,7 +68,7 @@
 					}
 				},
 
-				newPasswd : {
+				passwdNew : {
 					validators : {
 						notEmpty : {
 							message : '<s:message code="user.valid.not_empty" />'
@@ -76,7 +76,7 @@
 						stringLength : {
 							message : '<s:message code="user.valid.size.4_20" />',
 							min : 4,
-							max : 20,
+							max : 20
 						}
 					}
 				},
@@ -84,7 +84,7 @@
 				confirmPasswd : {
 					validators : {
 						identical : {
-							field : 'newPasswd',
+							field : 'passwdNew',
 							message : '<s:message code="user.valid.not_the_same" />'
 						}
 					}
@@ -94,7 +94,7 @@
 		});
 
 		if (excludePasswdValid) {
-			$(formId).formValidation('removeField', 'newPasswd');
+			$(formId).formValidation('removeField', 'passwdNew');
 		}
 
 	};

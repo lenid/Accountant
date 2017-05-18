@@ -37,7 +37,7 @@
 
 	<div class="container-fluid">
 		<div class="row">
-			<%@include file="include/contacts.jsp"%>
+			<%--<%@include file="include/contacts.jsp"%>--%>
 			<div class="col-lg-10 col-lg-offset-2 main">
 				<h3 align="center">
 					<s:message code="${ pageHeader }" text="No header" />
@@ -59,17 +59,17 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="message" items="${ messages }">
-									<tr>
-										<td align="center"><input class="messageCheckbox" type="checkbox" name="messageIds" value="${ message.id }" /></td>
-										<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.id }</td>
-										<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.from.firstName } ${ message.from.lastName }</td>
-										<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.to.firstName } ${ message.to.lastName }</td>
-										<td class='clickable clickable-row' onclick="getMessage(${ message.id })"><fmt:formatDate value="${ message.created }"
-												pattern='${ dateFormat }' /></td>
-										<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.subject }</td>
-									</tr>
-								</c:forEach>
+								<%--<c:forEach var="message" items="${ messages }">--%>
+									<%--<tr>--%>
+										<%--<td align="center"><input class="messageCheckbox" type="checkbox" name="messageIds" value="${ message.id }" /></td>--%>
+										<%--<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.id }</td>--%>
+										<%--<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.from.firstName } ${ message.from.lastName }</td>--%>
+										<%--<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.to.firstName } ${ message.to.lastName }</td>--%>
+										<%--<td class='clickable clickable-row' onclick="getMessage(${ message.id })"><fmt:formatDate value="${ message.created }"--%>
+												<%--pattern='${ dateFormat }' /></td>--%>
+										<%--<td class='clickable clickable-row' onclick="getMessage(${ message.id })">${ message.subject }</td>--%>
+									<%--</tr>--%>
+								<%--</c:forEach>--%>
 							</tbody>
 						</table>
 					</form:form>
@@ -143,7 +143,7 @@
 	function eventDrawFired() {
 		$(document).ready(function (){
 			var delButton = $('#mainTable').DataTable().button( 2 );
-		
+
 			if ($( "input:checked" ).length == 0) {
 	    		delButton.disable();
 			} else {
@@ -151,35 +151,35 @@
 			}
 		});
 	}
-	
+
 	$(".messageCheckbox").change(function() {
 		var delButton = $('#mainTable').DataTable().button( 2 );
-		
+
 		if(this.checked) {
 			delButton.enable();
 	    } else if ($( "input:checked" ).length == 0) {
 	    	delButton.disable();
 	    }
 	});
-	
+
 	function selectAll() {
 		$( ".messageCheckbox" ).each(function( index ) {
 			$( this ).prop("checked", true);
 		});
-		
+
 		var delButton = $('#mainTable').DataTable().button( 2 );
 		delButton.enable();
 	}
-	
+
 	function deselectAll() {
 		$( ".messageCheckbox" ).each(function( index ) {
 			$( this ).prop("checked", false);
 		});
-		
+
 		var delButton = $('#mainTable').DataTable().button( 2 );
 		delButton.disable();
 	}
-	
+
 	function getMessage(id) {
 		$.ajax({
 			url : 'message',

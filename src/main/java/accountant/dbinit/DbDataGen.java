@@ -1,132 +1,119 @@
 package accountant.dbinit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import accountant.dbinit.DbInitConfiguration.MessageServiceDbInit;
-import accountant.dbinit.DbInitConfiguration.UserProfileServiceDbInit;
-import accountant.model.Message;
-import accountant.model.User;
-import accountant.model.UserProfile;
-import accountant.model.UserProfile.Type;
-import accountant.service.UserProfileService;
-import accountant.service.UserService;
+import accountant.constants.Profile;
+import accountant.constants.StateOfAppointment;
+import accountant.dbinit.DbInitConfiguration.*;
+import accountant.models.db.AppointmentDb;
+import accountant.models.db.ProfileDb;
+import accountant.models.db.UserDb;
+import accountant.models.ui.UserUi;
+import accountant.util.SecurityHelper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-
 public class DbDataGen {
-	private static final String LOGIN = "admin";
-	private static final String PASSWD = "pass";
+    private static final String LOGIN = "admin";
+    private static final String PASSWD = "pass";
 
-	private UserService userService;
-	private UserProfileService userProfileService;
-	private UserProfileServiceDbInit userProfileDaoInit;
-	private MessageServiceDbInit messageService;
-	private ApplicationContext ctx;
+    private ApplicationContext ctx;
+    private ProfileServiceDbInit profileDao;
+    private UserServiceDbInit userDao;
+    private AppointmentServiceDbInit appointmentDao;
 
-	private DbDataGen() {
-		ctx = new AnnotationConfigApplicationContext(DbInitConfiguration.class);
+    private DbDataGen() {
+        ctx = new AnnotationConfigApplicationContext(DbInitConfiguration.class);
 
-		userService = ctx.getBean(UserService.class);
-		userProfileService = ctx.getBean(UserProfileService.class);
-		userProfileDaoInit = ctx.getBean(UserProfileServiceDbInit.class);
-		messageService = ctx.getBean(MessageServiceDbInit.class);
-		
-	}
+        profileDao = ctx.getBean(ProfileServiceDbInit.class);
+        userDao = ctx.getBean(UserServiceDbInit.class);
+        appointmentDao = ctx.getBean(AppointmentServiceDbInit.class);
 
-	public static void main(String[] args) throws Throwable {
-		new DbDataGen().dbInit();
-//		new DbDataGen().test5();
-	}
+    }
 
-	void test4() {
-//		Formatter formatter = new Formatter();
-		int a = 5;
-		String x = "Successfully deleted %d post(s)";
-//		formatter.format(x, a);
-		String str = String.format(x, a);
-		System.out.println(str);
-		
-	}
-	
-	void test3() throws Throwable {
-//		ShortUser u = shortUserService.findById(4);
-		ObjectMapper mapper = new ObjectMapper();
-//		String json = mapper.writeValueAsString(u);
-//		System.out.println(json);
-	}
-	
+    public static void main(String[] args) throws Throwable {
+        new DbDataGen().dbInit();
+    }
 
-	void test() throws Throwable {
-		User user = userService.findBySso("user_9");
+    public void dbInit() {
+        // init admin
+//        createUserProfiles();
+//        createUser(LOGIN, PASSWD, "Andriy");
 
-		ObjectMapper mapper = new ObjectMapper();
+        // init doctor
+        UserDb doctor = createUser("Doctor", PASSWD, "Doctor");
 
-		System.out.println("================================================================");
-		String json = mapper.writeValueAsString(user);
-		System.out.println(json);
+        // init patients
+        UserDb ivan = createUser("Ivan", PASSWD, "Ivan");
+        UserDb igor = createUser("Igor", PASSWD, "Igor");
 
-		User u = mapper.readValue(json, User.class);
+        // init appointment
+        createAppointment(doctor, ivan);
+        createAppointment(doctor, ivan);
+        createAppointment(doctor, ivan);
 
-		u.setLastName(new Date().toString());
-		
-		Message message = new Message();
-		message.setFrom(userService.findBySso("user_8"));
-		message.setTo(userService.findBySso("user_9"));
-		message.setSubject("subject");
-		message.setBody("BODY2");
-		
+        createAppointment(doctor, igor);
+        createAppointment(doctor, igor);
 
-		userService.update(u);
-		
-		System.out.println();
-	}
+        ((ConfigurableApplicationContext) ctx).close();
+    }
 
-	public void dbInit() {
-		messageService.deleteAll();
+    private void createUserProfiles() {
+        Profile[] profiles = Profile.values();
 
-		createUserProfile();
+        for (Profile profile : profiles) {
+            ProfileDb profileDB = new ProfileDb();
+            profileDB.setProfile(profile.toString());
+            profileDao.persist(profileDB);
+        }
+    }
 
-		createUser(LOGIN, PASSWD, "Andriy", Type.ADMIN);
+    private UserDb createUser(String login, String passwd, String firstName) {
+        UserDb user = new UserDb();
 
-		((ConfigurableApplicationContext) ctx).close();
-	}
+        user.setSsoId(login);
+        user.setPasswd(SecurityHelper.getEncodedPassword(passwd));
+        user.setFirstName(firstName);
+        user.setLastName("Losoviy");
+        user.setEmail(login + "@mail.ru");
+        user.setProfiles(profileDao.getAll());
 
-	private void createUserProfile() {
-		Type[] types = Type.values();
+        userDao.persist(user);
 
-		for (Type type : types) {
-			UserProfile userProfile = userProfileService.findByType(type.toString());
+        return user;
+    }
 
-			if (userProfile == null) {
-				userProfile = new UserProfile();
-				userProfile.setType(type.toString());
-				userProfileDaoInit.save(userProfile);
-			}
-		}
-	}
+    private void createAppointment(UserDb doctor, UserDb patient) {
+        AppointmentDb appointment = new AppointmentDb();
 
-	private void createUser(String login, String passwd, String firstName, Type userType) {
-		User user = userService.findBySso(login);
+//        appointment.setPlanned();
+        appointment.setPatient(patient);
+        appointment.setDoctor(doctor);
+        appointment.setPrice(15.26);
+        appointment.setNote("Doctor is " + doctor.getFirstName() + ", patient is " + patient.getFirstName());
+        appointment.setState(StateOfAppointment.PLANNED.toString());
 
-		if (user != null) {
-			userService.delete(user.getId());
-		}
-
-		user = new User();
-		user.setSsoId(login);
-		user.setNewPasswd(passwd);
-		user.setFirstName(firstName);
-		user.setLastName("Losoviy");
-		user.setEmail(login + "@mail.ru");
-
-		UserProfile userProfile = userProfileService.findByType(userType.toString());
-		user.setProfiles(new HashSet<UserProfile>(Arrays.asList(userProfile)));
-
-		userService.persist(user);
-	}
+        appointmentDao.persist(appointment);
+    }
 
 }
+
+/*
+
+    void test4() {
+		Formatter formatter = new Formatter();
+        int a = 5;
+        String x = "Successfully deleted %d post(s)";
+		formatter.format(x, a);
+        String str = String.format(x, a);
+        System.out.println(str);
+
+    }
+
+    void test3() throws Throwable {
+		ShortUser u = shortUserService.findById(4);
+        ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writeValueAsString(u);
+		System.out.println(json);
+    }
+
+ */

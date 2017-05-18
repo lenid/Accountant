@@ -1,6 +1,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="s" uri="http://www.springframework.org/tags"%>
 
+<s:eval expression="T(accountant.util.SecurityHelper).isAdmin()" var="isAdmin" />
+
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 	<div class="container-fluid">
 		<div class="navbar-header">
@@ -17,7 +19,10 @@
 							<input type="text" name="text" class="form-control" placeholder="Search by Id and Subject...">
 						</form></li -->
 					<li><a href="<c:url value="/"/>"><s:message code="header.link.home" /></a></li>
-					<li><a href="<c:url value="/user"/>"><s:message code="header.link.users" /></a></li>
+					<c:if test="${ isAdmin }">
+						<li><a href="<c:url value="/users"/>"><s:message code="header.link.users" /></a></li>
+					</c:if>
+					<li><a href="<c:url value="/appointments"/>"><s:message code="header.link.appointments" /></a></li>
 					<li><a href="<c:url value="/account"/>"><s:message code="header.link.account" /></a></li>
 					<li><a href="<c:url value="/logout"/>"><s:message code="header.link.logout" />, ${ userName }</a></li>
 				</c:if>

@@ -1,18 +1,9 @@
 package accountant.dbinit;
 
 import accountant.dao.AbstractDao;
-import accountant.dao.MessageDao;
-import accountant.dao.UserDao;
-import accountant.dao.UserProfileDao;
-import accountant.dao.impl.MessageDaoImpl;
-import accountant.dao.impl.UserDaoImpl;
-import accountant.dao.impl.UserProfileDaoImpl;
-import accountant.model.Message;
-import accountant.model.UserProfile;
-import accountant.service.UserProfileService;
-import accountant.service.UserService;
-import accountant.service.impl.UserProfileServiceImpl;
-import accountant.service.impl.UserServiceImpl;
+import accountant.models.db.AppointmentDb;
+import accountant.models.db.ProfileDb;
+import accountant.models.db.UserDb;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +12,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,15 +27,67 @@ public class DbInitConfiguration {
     @Autowired
     protected Environment environment;
 
+	@Bean
+	public ProfileServiceDbInit userProfileDaoSaver() {
+		return new ProfileServiceDbInit();
+	}
+
+    @Bean
+    public UserServiceDbInit userServiceDbInitSaver() {
+        return new UserServiceDbInit();
+    }
+
+    @Bean
+    public AppointmentServiceDbInit appointmentServiceDbInitSaver() {
+        return new AppointmentServiceDbInit();
+    }
+
+    
+    // Service implementation
+
+    @Transactional
+    class ProfileServiceDbInit extends AbstractDao<Integer, ProfileDb> {
+
+        public Set<ProfileDb> getAll() {
+            return super.getAll();
+        }
+
+        public void persist(ProfileDb userProfile) {
+            super.persist(userProfile);
+        }
+
+    }
+
+    @Transactional
+    class UserServiceDbInit extends AbstractDao<Integer, UserDb> {
+
+        public void persist(UserDb userDb) {
+            super.persist(userDb);
+        }
+
+    }
+
+    @Transactional
+    class AppointmentServiceDbInit extends AbstractDao<Integer, AppointmentDb> {
+
+        public void persist(AppointmentDb appointmentDb) {
+            super.persist(appointmentDb);
+        }
+
+    }
+
+
+	// DB config
+
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan(new String[] { "accountant.model" });
+        sessionFactory.setPackagesToScan(new String[] { "accountant.models" });
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
-     }
-	
+    }
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -56,100 +97,23 @@ public class DbInitConfiguration {
         dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
         return dataSource;
     }
-    
-	@Bean
+
+    @Bean
     @Autowired
     public HibernateTransactionManager transactionManager(SessionFactory s) {
-       HibernateTransactionManager txManager = new HibernateTransactionManager();
-       txManager.setSessionFactory(s);
-       return txManager;
+        HibernateTransactionManager txManager = new HibernateTransactionManager();
+        txManager.setSessionFactory(s);
+        return txManager;
     }
-	
-	@Bean
-	public UserService userService() {
-		return new UserServiceImpl();
-	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	public UserDao userDao() {
-		return new UserDaoImpl();
-	}
-
-	@Bean
-	public UserProfileService userProfileService() {
-		return new UserProfileServiceImpl();
-	}
-	
-	@Bean
-	public UserProfileDao userProfileDao() {
-		return new UserProfileDaoImpl();
-	}
-	
-	@Bean
-	public UserProfileServiceDbInit userProfileDaoSaver() {
-		return new UserProfileServiceDbInit();
-	}
-	
-	@Bean
-	public MessageDao messageDao() {
-		return new MessageDaoImpl();
-	}
-	
-	@Bean
-	public MessageServiceDbInit messageService() {
-		return new MessageServiceDbInit();
-	}
-
-
-//	@Bean
-//	public ShortUserDaoImpl shortUserDao() {
-//		return new ShortUserDaoImpl();
-//	}
-//	
-//	@Bean
-//	public ShortUserService shortUserService() {
-//		return new ShortUserService();
-//	}
-	
     protected Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
         properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
         properties.put("hibernate.format_sql", environment.getRequiredProperty("hibernate.format_sql"));
         properties.put("hibernate.hbm2ddl.auto", environment.getRequiredProperty("hibernate.hbm2ddl.auto"));
-        return properties;        
+        return properties;
     }
-    
-    @Transactional
-	class UserProfileServiceDbInit extends AbstractDao<Integer, UserProfile> {
 
-		public void save(UserProfile userProfile) {
-			persist(userProfile);
-		}
-		
-	}
-    
-    @Transactional
-	class MessageServiceDbInit extends AbstractDao<Integer, Message> {
-    	
-    	public void deleteAll() {
-    		Set<Message> allMessages = getAll();
-
-    		for (Message message : allMessages) {
-    			delete(message);
-    		}
-    	}
-    	
-    	@Override
-    	public void persist(Message entity) {
-    		super.persist(entity);
-    	}
-    	
-	}
 }
 

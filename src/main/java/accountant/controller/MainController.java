@@ -1,8 +1,8 @@
 package accountant.controller;
 
+import accountant.models.db.UserDb;
 import accountant.data.Notification;
-import accountant.model.Message;
-import accountant.model.User;
+import accountant.models.ui.UserUi;
 import accountant.service.MessageService;
 import accountant.service.UserService;
 import accountant.util.SecurityHelper;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 @Controller
 public class MainController extends BaseController {
@@ -30,14 +29,14 @@ public class MainController extends BaseController {
 		ModelAndView model = new ModelAndView("home");
 		defaultModelInitialize(model, notifications, "main.header");
 		
-		User user = userService.findBySso(SecurityHelper.getSso());
-		model.addObject("user", user);
+		UserUi userUi = userService.findBySso(SecurityHelper.getSso());
+		model.addObject("user", userUi);
 
-		Set<Message> messages = messageService.findIncoming(user);
-		messages.addAll(messageService.findOutcoming(user));
-		model.addObject("messages", messages);
-
-		model.addObject("message", new Message());
+//		Set<MessageDao> messages = messageService.findIncoming(user);
+//		messages.addAll(messageService.findOutcoming(user));
+//		model.addObject("messages", messages);
+//
+//		model.addObject("message", new MessageDao());
 		
 		return model;
 	}

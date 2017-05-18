@@ -1,11 +1,11 @@
 package accountant.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import accountant.constants.Profile;
+import accountant.data.Notification;
+import accountant.models.ui.UserUi;
+import accountant.service.ProfileService;
+import accountant.service.UserService;
+import accountant.util.SecurityHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,19 +21,16 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import accountant.data.Notification;
-import accountant.model.User;
-import accountant.service.UserProfileService;
-import accountant.service.UserService;
-import accountant.util.SecurityHelper;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 @Controller
 public class AccountController extends BaseController {
@@ -44,7 +41,7 @@ public class AccountController extends BaseController {
 	UserService userService;
 
 	@Autowired
-	UserProfileService userProfileService;
+	ProfileService profileService;
 
 	@Autowired
 	@Qualifier("authenticationManager")
@@ -82,30 +79,29 @@ public class AccountController extends BaseController {
 		ModelAndView model = new ModelAndView("user");
 		defaultModelInitialize(model, notifications, "user.header.create");
 		
-		model.addObject("user", new User());
+		model.addObject("user", new UserUi());
 
 		return model;
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String createAccount(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes, 
-			HttpServletRequest request, HttpServletResponse response) {
+	public String createAccount(@ModelAttribute("user") UserUi userUi, RedirectAttributes redirectAttributes,
+								HttpServletRequest request, HttpServletResponse response) {
 		List<Notification> notifications = new ArrayList<Notification>();
 		
-		if (userService.isDuplicatedSsoId(user)) {
+		if (userService.isDuplicatedSsoId(userUi)) {
 			notifications.add(new Notification("user.notification.warning.create.duplicate_sso_id"));
 			redirectAttributes.addFlashAttribute(notifications);
-			redirectAttributes.addFlashAttribute(user);
+			redirectAttributes.addFlashAttribute(userUi);
 			
 			return "redirect:/signup";
 		}
-		
-//		UserProfile userProfile_user = userProfileService.findByType(UserProfile.Type.);
-//		user.setUserProfiles(new HashSet<UserProfile>(Arrays.asList(userProfile_user)));
-		userService.persist(user);
+
+        userUi.setProfiles(new HashSet<>(Arrays.asList(Profile.USER)));
+		userService.persist(userUi);
 		notifications.add(new Notification("user.notification.success.create"));
 		redirectAttributes.addFlashAttribute(notifications);
-		authenticateUserAndSetSession(user, request, response);
+		authenticateUserAndSetSession(userUi, request, response);
 
 		return "redirect:/";
 	}
@@ -115,33 +111,35 @@ public class AccountController extends BaseController {
 		ModelAndView model = new ModelAndView("user");
 		defaultModelInitialize(model, notifications, "user.header.edit");
 
-		model.addObject("user", userService.findBySso(SecurityHelper.getSso()));
-		model.addObject("roles", userProfileService.findAll());
+		UserUi userUi = userService.findBySso(SecurityHelper.getSso());
+
+		model.addObject("user", userUi);
+		model.addObject("roles", profileService.findAll());
 
 		return model;
 	}
 
 	@RequestMapping(value = "/account", method = RequestMethod.POST)
-	public String editAccount(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes, HttpServletRequest request,
-			HttpServletResponse response, @RequestParam String action) {
+	public String editAccount(@ModelAttribute("user") UserUi userUi, RedirectAttributes redirectAttributes, HttpServletRequest request,
+							  HttpServletResponse response, @RequestParam String action) {
 		List<Notification> notifications = new ArrayList<>();
 
 		try {
 			switch (EditType.valueOf(action.toUpperCase())) {
 			case ACCOUNT:
-				userService.update(user);
+				userService.update(userUi);
 				notifications.add(new Notification("user.notification.success.update.account"));
 				break;
 			case PASSWD:
-				if (checkPasswd(user)) {
-					userService.update(user);
+				if (checkPasswd(userUi)) {
+					userService.update(userUi);
 					notifications.add(new Notification("user.notification.success.update.passwd"));
 				} else {
 					notifications.add(new Notification("user.notification.warning.update.passwd.wrong_passwd"));
 				}
 				break;
 			case SSO_ID:
-				editSsoId(user, notifications, request, response);
+				editSsoId(userUi, notifications, request, response);
 				break;
 			default:
 				logger.error("Unimplemented \"EditType\" value case!");
@@ -168,33 +166,33 @@ public class AccountController extends BaseController {
 	
 	@RequestMapping(value = "/isDuplicatedSsoId", method = RequestMethod.GET)
 	public @ResponseBody String isDuplicatedSsoIdAjax(@RequestParam("id") int id, @RequestParam("ssoId") String ssoId) {
-		User user = new User();
-		user.setId(id);
-		user.setSsoId(ssoId);
-		boolean isDuplicatedSsoId = userService.isDuplicatedSsoId(user);
+		UserUi userUi = new UserUi();
+		userUi.setId(id);
+		userUi.setSsoId(ssoId);
+		boolean isDuplicatedSsoId = userService.isDuplicatedSsoId(userUi);
 		
 		return "{ \"valid\": " + !isDuplicatedSsoId + " }";
 	}
 	
-	private void editSsoId(User user, List<Notification> notifications, HttpServletRequest request, HttpServletResponse response) {
-		if (!checkPasswd(user)) {
+	private void editSsoId(UserUi userUi, List<Notification> notifications, HttpServletRequest request, HttpServletResponse response) {
+		if (!checkPasswd(userUi)) {
 			notifications.add(new Notification("user.notification.warning.update.sso_id.wrong_passwd"));
 			return;
 		}
-		if (userService.isDuplicatedSsoId(user)) {
+		if (userService.isDuplicatedSsoId(userUi)) {
 			notifications.add(new Notification("user.notification.warning.update.duplicate_sso_id"));
 			return;
 		}
 
-		userService.update(user);
+		userService.update(userUi);
 		notifications.add(new Notification("user.notification.success.update.sso_id"));
-		authenticateUserAndSetSession(user, request, response);
+		authenticateUserAndSetSession(userUi, request, response);
 	}
 
-	private void authenticateUserAndSetSession(User user, HttpServletRequest request, HttpServletResponse response) {
+	private void authenticateUserAndSetSession(UserUi userUi, HttpServletRequest request, HttpServletResponse response) {
 		logout(request, response);
-		String rawPasswd = user.getNewPasswd().equals("") ? user.getOldPasswd() : user.getNewPasswd();
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getSsoId(), rawPasswd);
+		String rawPasswd = userUi.getPasswdNew().equals("") ? userUi.getPasswdOld() : userUi.getPasswdNew();
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userUi.getSsoId(), rawPasswd);
 		request.getSession();
 		token.setDetails(new WebAuthenticationDetails(request));
 		Authentication authenticatedUser = authenticationManager.authenticate(token);
@@ -211,9 +209,9 @@ public class AccountController extends BaseController {
 		}
 	}
 
-	private boolean checkPasswd(User user) {
-		String encodedPassword = userService.findBySso(SecurityHelper.getSso()).getPasswd();
-		String rawPassword = user.getOldPasswd();
+	private boolean checkPasswd(UserUi userUi) {
+		String encodedPassword = userService.findBySso(SecurityHelper.getSso()).getPasswdEncoded();
+		String rawPassword = userUi.getPasswdOld();
 
 		if (!new BCryptPasswordEncoder().matches(rawPassword, encodedPassword)) {
 			return false;
@@ -240,8 +238,8 @@ public class AccountController extends BaseController {
 
 	// Need test
 //	@ModelAttribute("roles")
-//	public List<UserProfile> initializeProfiles() {
-//		return userProfileService.findAll();
+//	public List<ProfileDb> initializeProfiles() {
+//		return profileService.findAll();
 //	}
 
 }
@@ -272,7 +270,7 @@ public class AccountController extends BaseController {
  * "SSO ID : " + user.getSsoId()); System.out.println("Password : " +
  * user.getPasswd()); System.out.println("Email : " + user.getEmail());
  * System.out.println("Checking UsrProfiles...."); if (user.getUserProfiles() !=
- * null) { for (UserProfile profile : user.getUserProfiles()) {
+ * null) { for (ProfileDb profile : user.getUserProfiles()) {
  * System.out.println("Profile : " + profile.getType()); } }
  * 
  * model.addAttribute("success", "User " + user.getFirstName() +
